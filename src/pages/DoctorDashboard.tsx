@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import PatientList from '@/components/doctor/PatientList';
 import TrackBoard from '@/components/doctor/TrackBoard';
@@ -9,21 +9,46 @@ import ResultsTab from '@/components/doctor/ResultsTab';
 import NotesTab from '@/components/doctor/NotesTab';
 
 const DoctorDashboardContent = ({ activeTab }: { activeTab: string }) => {
+  const location = useLocation();
+  let content;
+
+  switch (location.pathname) {
+    case '/doctor-dashboard/track-board':
+      content = <TrackBoard />;
+      break;
+    case '/doctor-dashboard/orders':
+      content = <OrdersTab />;
+      break;
+    case '/doctor-dashboard/results':
+      content = <ResultsTab />;
+      break;
+    case '/doctor-dashboard/notes':
+      content = <NotesTab />;
+      break;
+    default:
+      content = <PatientList />;
+  }
+
   return (
     <DashboardLayout activeTab={activeTab} role="doctor">
-      <Routes>
-        <Route path="/" element={<PatientList />} />
-        <Route path="/track-board" element={<TrackBoard />} />
-        <Route path="/orders" element={<OrdersTab />} />
-        <Route path="/results" element={<ResultsTab />} />
-        <Route path="/notes" element={<NotesTab />} />
-      </Routes>
+      {content}
     </DashboardLayout>
   );
 };
 
 const DoctorDashboard = () => {
-  const [activeTab, setActiveTab] = useState('patients');
+  const location = useLocation();
+  
+  // Determine activeTab based on current path
+  const getActiveTabFromPath = (path: string) => {
+    if (path.includes('/track-board')) return 'track board';
+    if (path.includes('/orders')) return 'orders';
+    if (path.includes('/results')) return 'results';
+    if (path.includes('/notes')) return 'notes';
+    return 'patients';
+  };
+  
+  const activeTab = getActiveTabFromPath(location.pathname);
   
   return (
     <Routes>

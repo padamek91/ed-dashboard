@@ -1,5 +1,6 @@
 
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import NursePatientList from '@/components/nurse/NursePatientList';
 import NurseTrackBoard from '@/components/nurse/NurseTrackBoard';
@@ -7,19 +8,43 @@ import NurseTasks from '@/components/nurse/NurseTasks';
 import NurseVitals from '@/components/nurse/NurseVitals';
 
 const NurseDashboardContent = ({ activeTab }: { activeTab: string }) => {
+  const location = useLocation();
+  let content;
+
+  switch (location.pathname) {
+    case '/nurse-dashboard/track-board':
+      content = <NurseTrackBoard />;
+      break;
+    case '/nurse-dashboard/tasks':
+      content = <NurseTasks />;
+      break;
+    case '/nurse-dashboard/vitals':
+      content = <NurseVitals />;
+      break;
+    default:
+      content = <NursePatientList />;
+  }
+
   return (
     <DashboardLayout activeTab={activeTab} role="nurse">
-      <Routes>
-        <Route path="/" element={<NursePatientList />} />
-        <Route path="/track-board" element={<NurseTrackBoard />} />
-        <Route path="/tasks" element={<NurseTasks />} />
-        <Route path="/vitals" element={<NurseVitals />} />
-      </Routes>
+      {content}
     </DashboardLayout>
   );
 };
 
 const NurseDashboard = () => {
+  const location = useLocation();
+  
+  // Determine activeTab based on current path
+  const getActiveTabFromPath = (path: string) => {
+    if (path.includes('/track-board')) return 'track board';
+    if (path.includes('/tasks')) return 'tasks';
+    if (path.includes('/vitals')) return 'vitals';
+    return 'patients';
+  };
+  
+  const activeTab = getActiveTabFromPath(location.pathname);
+  
   return (
     <Routes>
       <Route path="/" element={<NurseDashboardContent activeTab="patients" />} />
