@@ -6,14 +6,18 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { patients } from '@/data/mockData';
-import { labOrders } from '@/data/ordersMockData';
 import { Search } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { formatDateTime } from '@/utils/orderUtils';
+import { useOrders } from '@/contexts/OrdersContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/components/ui/sonner';
 
 const ResultsTab = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { labOrders, acknowledgeLabResult } = useOrders();
   
   // Parse query parameters
   const queryParams = new URLSearchParams(location.search);
@@ -25,9 +29,6 @@ const ResultsTab = () => {
   const [timeFilter, setTimeFilter] = useState('any');
   const [selectedResult, setSelectedResult] = useState<any>(null);
 
-  // Get completed orders with results
-  const completedOrders = labOrders.filter(order => order.status === 'resulted' && order.result);
-
   // Effect to find the specific result when ID is provided
   useEffect(() => {
     if (resultId) {
@@ -38,7 +39,10 @@ const ResultsTab = () => {
     } else {
       setSelectedResult(null);
     }
-  }, [resultId]);
+  }, [resultId, labOrders]);
+
+  // Get completed orders with results
+  const completedOrders = labOrders.filter(order => order.status === 'resulted' && order.result);
 
   // Filter results based on selections
   const filteredResults = completedOrders.filter(order => {
@@ -109,6 +113,20 @@ const ResultsTab = () => {
     navigate('/doctor-dashboard/results');
   };
 
+  // Handle acknowledging the critical result
+  const handleAcknowledgeResult = () => {
+    if (selectedResult && user) {
+      const timestamp = new Date().toLocaleString();
+      const comment = `Result acknowledged by ${user.name} at ${timestamp}`;
+      acknowledgeLabResult(selectedResult.id, comment);
+    }
+  };
+  
+  // Check if this result has already been acknowledged
+  const isAcknowledged = selectedResult?.acknowledgements?.some(
+    (ack: any) => ack.role === 'doctor'
+  );
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Results Review</h2>
@@ -161,6 +179,35 @@ const ResultsTab = () => {
                   <p>{formatDateTime(selectedResult.timestamp)}</p>
                 </div>
               </div>
+              
+              {/* Acknowledgment section */}
+              {selectedResult.critical && (
+                <div className="mt-6 border-t border-gray-200 pt-4">
+                  <h3 className="font-medium mb-2">Acknowledgment:</h3>
+                  
+                  {isAcknowledged ? (
+                    <div className="bg-green-50 border border-green-200 rounded p-3">
+                      {selectedResult.acknowledgements?.map((ack: any, i: number) => (
+                        ack.role === 'doctor' && (
+                          <div key={i} className="text-green-800">
+                            {ack.comment}
+                          </div>
+                        )
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col">
+                      <p className="text-red-600 mb-2">This critical result requires your acknowledgment</p>
+                      <Button 
+                        onClick={handleAcknowledgeResult}
+                        className="bg-medical-red hover:bg-red-700 text-white"
+                      >
+                        Acknowledge Critical Result
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

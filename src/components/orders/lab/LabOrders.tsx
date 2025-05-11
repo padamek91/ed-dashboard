@@ -2,21 +2,21 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { labOrders } from '@/data/ordersMockData';
 import PatientSelector from '../PatientSelector';
 import LabOrderEntry from './LabOrderEntry';
 import LabOrderStatus from './LabOrderStatus';
 import LabResults from './LabResults';
+import { useOrders } from '@/contexts/OrdersContext';
 
 const LabOrders = () => {
+  const { labOrders, addLabOrders } = useOrders();
   const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [selectedPatient, setSelectedPatient] = useState<{id: string; name: string; mrn: string} | null>(null);
   const [labTab, setLabTab] = useState<string>('entry');
-  const [orders, setOrders] = useState<any[]>(labOrders);
   
   // Handle new order submission
   const handleOrderSubmit = (newOrders: any[]) => {
-    setOrders([...newOrders, ...orders]);
+    addLabOrders(newOrders);
   };
 
   return (
@@ -49,14 +49,14 @@ const LabOrders = () => {
 
           <TabsContent value="status" className="mt-4">
             <LabOrderStatus
-              orders={orders}
+              orders={labOrders}
               selectedPatient={selectedPatient}
             />
           </TabsContent>
 
           <TabsContent value="results" className="mt-4">
             <LabResults
-              orders={orders}
+              orders={labOrders}
               selectedPatient={selectedPatient}
             />
           </TabsContent>

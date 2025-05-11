@@ -5,74 +5,72 @@
 
 @layer base {
   :root {
-    --background: 210 100% 98%;
-    --foreground: 220 10% 20%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 10% 20%;
+    --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 10% 20%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 207 85% 39%;
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 207 85% 39%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 201 94% 74%;
-    --accent-foreground: 207 85% 39%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 207 85% 39%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
-
-    --sidebar-background: 207 85% 39%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 201 94% 74%;
-    --sidebar-primary-foreground: 207 85% 39%;
-    --sidebar-accent: 206 100% 50%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 205 70% 35%;
-    --sidebar-ring: 201 94% 74%;
+    
+    /* Medical specific colors */
+    --medical-red: 354 91% 54%;
+    --medical-orange: 32 95% 44%;
+    --medical-green: 142 72% 29%;
+    --medical-blue: 217 91% 60%;
+    --medical-purple: 262 83% 58%;
   }
 
   .dark {
-    --background: 223 47% 11%;
+    --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 11%;
+    --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 11%;
+    --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 207 85% 39%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 217 33% 18%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217 33% 18%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 206 100% 50%;
+    --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 33% 18%;
-    --input: 217 33% 18%;
-    --ring: 213 27% 84%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
 
@@ -80,67 +78,7 @@
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-/* Custom EHR specific styles */
-@layer components {
-  .ehr-table {
-    @apply w-full border-collapse text-sm;
-  }
-  
-  .ehr-table th {
-    @apply bg-secondary text-left py-2 px-3 font-medium text-foreground;
-  }
-  
-  .ehr-table td {
-    @apply border-t py-2 px-3 border-border;
-  }
-  
-  .ehr-table tr:hover {
-    @apply bg-muted/50;
-  }
-  
-  .ehr-table tr.assigned {
-    @apply bg-accent/20;
-  }
-  
-  .acuity-1 {
-    @apply bg-medical-red text-white py-1 px-2 rounded-md text-xs font-medium;
-  }
-  
-  .acuity-2 {
-    @apply bg-medical-orange text-white py-1 px-2 rounded-md text-xs font-medium;
-  }
-  
-  .acuity-3 {
-    @apply bg-medical-yellow text-foreground py-1 px-2 rounded-md text-xs font-medium;
-  }
-  
-  .acuity-4 {
-    @apply bg-medical-green text-white py-1 px-2 rounded-md text-xs font-medium;
-  }
-  
-  .acuity-5 {
-    @apply bg-medical-blue text-white py-1 px-2 rounded-md text-xs font-medium;
-  }
-  
-  .critical-value {
-    @apply text-medical-red font-medium;
-  }
-  
-  .abnormal-value {
-    @apply text-medical-orange;
-  }
-  
-  .dashboard-card {
-    @apply bg-card rounded-lg shadow-sm border p-4;
-  }
-  
-  .dashboard-title {
-    @apply text-lg font-medium mb-4;
   }
 }
