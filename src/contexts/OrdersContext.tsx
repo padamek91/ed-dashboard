@@ -1,6 +1,6 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { labOrders as initialLabOrders, medicationOrders as initialMedicationOrders } from '@/data/mockData';
+import { labOrders as initialLabOrders, medicationOrders as initialMedicationOrders } from '@/data/ordersMockData';
 import { useToast } from '@/hooks/use-toast';
 import { toast } from '@/components/ui/sonner';
 import { useAuth } from './AuthContext';

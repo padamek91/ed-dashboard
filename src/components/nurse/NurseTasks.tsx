@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -160,10 +159,10 @@ const NurseTasks = () => {
         task: `Process lab: ${order.type}`,
         status: order.status === 'order placed' ? 'pending' : 'in progress',
         dueTime: new Date(order.timestamp).toISOString(),
-        priority: order.urgent ? 'high' : 'medium',
+        priority: order.urgent ? 'high' as const : 'medium' as const,
         assignedTo: user?.name || 'Nurse',
         completedAt: null,
-        taskType: 'lab',
+        taskType: 'lab' as const,
         orderId: order.id
       }));
 
@@ -178,10 +177,10 @@ const NurseTasks = () => {
         task: `Administer: ${order.type}`,
         status: 'pending',
         dueTime: new Date(order.timestamp).toISOString(),
-        priority: order.urgent ? 'high' : 'medium',
+        priority: order.urgent ? 'high' as const : 'medium' as const,
         assignedTo: user?.name || 'Nurse',
         completedAt: null,
-        taskType: 'medication',
+        taskType: 'medication' as const,
         orderId: order.id
       }));
     
