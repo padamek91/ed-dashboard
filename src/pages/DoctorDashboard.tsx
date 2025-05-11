@@ -8,26 +8,38 @@ import OrdersTab from '@/components/doctor/OrdersTab';
 import ResultsTab from '@/components/doctor/ResultsTab';
 import NotesTab from '@/components/doctor/NotesTab';
 
-const DoctorDashboardContent = ({ activeTab }: { activeTab: string }) => {
+const DoctorDashboardContent = () => {
   const location = useLocation();
   let content;
+  let activeTab;
 
   switch (location.pathname) {
     case '/doctor-dashboard/track-board':
       content = <TrackBoard />;
+      activeTab = 'track board';
       break;
     case '/doctor-dashboard/orders':
       content = <OrdersTab />;
+      activeTab = 'orders';
       break;
     case '/doctor-dashboard/results':
       content = <ResultsTab />;
+      activeTab = 'results';
       break;
     case '/doctor-dashboard/notes':
       content = <NotesTab />;
+      activeTab = 'notes';
       break;
     default:
       content = <PatientList />;
+      activeTab = 'patients';
   }
+
+  useEffect(() => {
+    // Log the active route for debugging
+    console.log('Active route:', location.pathname);
+    console.log('Active tab:', activeTab);
+  }, [location.pathname, activeTab]);
 
   return (
     <DashboardLayout activeTab={activeTab} role="doctor">
@@ -37,26 +49,13 @@ const DoctorDashboardContent = ({ activeTab }: { activeTab: string }) => {
 };
 
 const DoctorDashboard = () => {
-  const location = useLocation();
-  
-  // Determine activeTab based on current path
-  const getActiveTabFromPath = (path: string) => {
-    if (path.includes('/track-board')) return 'track board';
-    if (path.includes('/orders')) return 'orders';
-    if (path.includes('/results')) return 'results';
-    if (path.includes('/notes')) return 'notes';
-    return 'patients';
-  };
-  
-  const activeTab = getActiveTabFromPath(location.pathname);
-  
   return (
     <Routes>
-      <Route path="/" element={<DoctorDashboardContent activeTab="patients" />} />
-      <Route path="/track-board" element={<DoctorDashboardContent activeTab="track board" />} />
-      <Route path="/orders" element={<DoctorDashboardContent activeTab="orders" />} />
-      <Route path="/results" element={<DoctorDashboardContent activeTab="results" />} />
-      <Route path="/notes" element={<DoctorDashboardContent activeTab="notes" />} />
+      <Route path="/" element={<DoctorDashboardContent />} />
+      <Route path="/track-board" element={<DoctorDashboardContent />} />
+      <Route path="/orders" element={<DoctorDashboardContent />} />
+      <Route path="/results" element={<DoctorDashboardContent />} />
+      <Route path="/notes" element={<DoctorDashboardContent />} />
       <Route path="*" element={<Navigate to="/doctor-dashboard" replace />} />
     </Routes>
   );

@@ -7,24 +7,35 @@ import NurseTrackBoard from '@/components/nurse/NurseTrackBoard';
 import NurseTasks from '@/components/nurse/NurseTasks';
 import NurseVitals from '@/components/nurse/NurseVitals';
 
-const NurseDashboardContent = ({ activeTab }: { activeTab: string }) => {
+const NurseDashboardContent = () => {
   const location = useLocation();
   let content;
+  let activeTab;
 
   switch (location.pathname) {
     case '/nurse-dashboard/track-board':
       content = <NurseTrackBoard />;
+      activeTab = 'track board';
       break;
     case '/nurse-dashboard/tasks':
       content = <NurseTasks />;
+      activeTab = 'tasks';
       break;
     case '/nurse-dashboard/vitals':
       content = <NurseVitals />;
+      activeTab = 'vitals';
       break;
     default:
       content = <NursePatientList />;
+      activeTab = 'patients';
   }
-
+  
+  useEffect(() => {
+    // Log the active route for debugging
+    console.log('Nurse active route:', location.pathname);
+    console.log('Nurse active tab:', activeTab);
+  }, [location.pathname, activeTab]);
+  
   return (
     <DashboardLayout activeTab={activeTab} role="nurse">
       {content}
@@ -33,24 +44,12 @@ const NurseDashboardContent = ({ activeTab }: { activeTab: string }) => {
 };
 
 const NurseDashboard = () => {
-  const location = useLocation();
-  
-  // Determine activeTab based on current path
-  const getActiveTabFromPath = (path: string) => {
-    if (path.includes('/track-board')) return 'track board';
-    if (path.includes('/tasks')) return 'tasks';
-    if (path.includes('/vitals')) return 'vitals';
-    return 'patients';
-  };
-  
-  const activeTab = getActiveTabFromPath(location.pathname);
-  
   return (
     <Routes>
-      <Route path="/" element={<NurseDashboardContent activeTab="patients" />} />
-      <Route path="/track-board" element={<NurseDashboardContent activeTab="track board" />} />
-      <Route path="/tasks" element={<NurseDashboardContent activeTab="tasks" />} />
-      <Route path="/vitals" element={<NurseDashboardContent activeTab="vitals" />} />
+      <Route path="/" element={<NurseDashboardContent />} />
+      <Route path="/track-board" element={<NurseDashboardContent />} />
+      <Route path="/tasks" element={<NurseDashboardContent />} />
+      <Route path="/vitals" element={<NurseDashboardContent />} />
       <Route path="*" element={<Navigate to="/nurse-dashboard" replace />} />
     </Routes>
   );
