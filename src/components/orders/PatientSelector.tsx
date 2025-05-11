@@ -18,20 +18,33 @@ interface PatientSelectorProps {
   onPatientSelect: (patient: Patient | null) => void;
   selectedPatientId: string;
   onPatientIdChange: (id: string) => void;
+  myPatients?: Patient[];
 }
 
 const PatientSelector = ({ 
   selectedPatient, 
   onPatientSelect, 
   selectedPatientId, 
-  onPatientIdChange 
+  onPatientIdChange,
+  myPatients = []
 }: PatientSelectorProps) => {
   const [patientSearchQuery, setPatientSearchQuery] = useState<string>('');
   const [patientSearchResults, setPatientSearchResults] = useState<typeof patients>([]);
   const { user } = useAuth();
   
-  // Get patients assigned to the logged in doctor
-  const myPatients = patients.filter(p => p.attendingPhysician === user?.name);
+  // Get patients assigned to the logged in user if myPatients not provided
+  const assignedPatients = myPatients.length > 0 ? myPatients : 
+    user?.role === 'doctor' 
+      ? patients.filter(p => p.attendingPhysician === user?.name).map(p => ({
+          id: p.id,
+          name: p.name,
+          mrn: p.mrn
+        }))
+      : patients.filter(p => p.nurseAssigned === user?.name).map(p => ({
+          id: p.id,
+          name: p.name,
+          mrn: p.mrn
+        }));
   
   // Effect to filter patients based on search
   useEffect(() => {
@@ -74,8 +87,8 @@ const PatientSelector = ({
   };
 
   return (
-    <>
-      <div className="flex items-center space-x-4 mb-4">
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center gap-4 w-full">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-1">My Patients</label>
           <Select value={selectedPatientId} onValueChange={onPatientIdChange}>
@@ -83,15 +96,22 @@ const PatientSelector = ({
               <SelectValue placeholder="Select patient" />
             </SelectTrigger>
             <SelectContent>
-              {myPatients.map(patient => (
-                <SelectItem key={patient.id} value={patient.id}>
-                  {patient.name} ({patient.mrn})
+              {assignedPatients.length > 0 ? (
+                assignedPatients.map(patient => (
+                  <SelectItem key={patient.id} value={patient.id}>
+                    {patient.name} ({patient.mrn})
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="no-patients" disabled>
+                  No assigned patients found
                 </SelectItem>
-              ))}
+              )}
             </SelectContent>
           </Select>
         </div>
-        <div className="flex-[2] relative">
+        
+        <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-1">Patient Search</label>
           <div className="relative">
             <Input
@@ -126,7 +146,7 @@ const PatientSelector = ({
       </div>
       
       {selectedPatient && (
-        <div className="bg-blue-50 p-3 rounded-md mb-4 flex justify-between items-center">
+        <div className="bg-blue-50 p-3 rounded-md flex justify-between items-center">
           <div>
             <span className="text-sm text-gray-500">Patient Selected:</span>
             <h3 className="font-medium">{selectedPatient.name} ({selectedPatient.mrn})</h3>
@@ -143,7 +163,7 @@ const PatientSelector = ({
           </Button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

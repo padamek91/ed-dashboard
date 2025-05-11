@@ -9,7 +9,11 @@ import TasksFilter from './task/TasksFilter';
 import TasksList from './task/TasksList';
 import { Task, initialNurseTasks } from './task/types';
 
-const NurseTasks = () => {
+interface NurseTasksProps {
+  initialPatientId?: string;
+}
+
+const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
   const { user } = useAuth();
   const { labOrders, medicationOrders, acknowledgeLabOrder, printLabels, collectLabSpecimen } = useOrders();
   
@@ -18,7 +22,22 @@ const NurseTasks = () => {
   const [selectedPatient, setSelectedPatient] = useState<{id: string; name: string; mrn: string} | null>(null);
   const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  
+  // Set initial patient if provided
+  useEffect(() => {
+    if (initialPatientId) {
+      const patient = patients.find(p => p.id === initialPatientId);
+      if (patient) {
+        setSelectedPatientId(patient.id);
+        setSelectedPatient({
+          id: patient.id,
+          name: patient.name,
+          mrn: patient.mrn
+        });
+        console.log('Initially selected patient:', patient.name);
+      }
+    }
+  }, [initialPatientId]);
   
   // Convert lab orders to tasks
   useEffect(() => {
@@ -61,20 +80,9 @@ const NurseTasks = () => {
     setTasks([...initialNurseTasks, ...labTasks, ...medicationTasks]);
   }, [labOrders, medicationOrders, user]);
   
-  // Filter tasks based on search query
-  const searchFilteredTasks = tasks.filter(task => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      task.task.toLowerCase().includes(query) ||
-      task.patientName.toLowerCase().includes(query) ||
-      task.patientMrn.toLowerCase().includes(query)
-    );
-  });
-  
   // Filter tasks based on active tab, patient selection, and status filter
   const getFilteredTasks = () => {
-    let filtered = searchFilteredTasks;
+    let filtered = tasks;
     
     // Filter by task type based on active tab
     if (activeTab !== 'all') {
@@ -84,6 +92,7 @@ const NurseTasks = () => {
     // Filter by patient if selected
     if (selectedPatient) {
       filtered = filtered.filter(task => 
+        task.patientId === selectedPatient.id || 
         task.patientName === selectedPatient.name || 
         task.patientMrn === selectedPatient.mrn
       );
@@ -109,9 +118,9 @@ const NurseTasks = () => {
   const filteredTasks = getFilteredTasks();
   
   // Count pending tasks by type for badges
-  const pendingLabTasks = searchFilteredTasks.filter(task => task.taskType === 'lab' && task.status === 'pending').length;
-  const pendingMedTasks = searchFilteredTasks.filter(task => task.taskType === 'medication' && task.status === 'pending').length;
-  const pendingAllTasks = searchFilteredTasks.filter(task => task.status === 'pending').length;
+  const pendingLabTasks = tasks.filter(task => task.taskType === 'lab' && task.status === 'pending').length;
+  const pendingMedTasks = tasks.filter(task => task.taskType === 'medication' && task.status === 'pending').length;
+  const pendingAllTasks = tasks.filter(task => task.status === 'pending').length;
 
   // Function to toggle task completion
   const toggleTaskStatus = (taskId: string) => {
@@ -205,8 +214,6 @@ const NurseTasks = () => {
 
         {/* Filter Bar */}
         <TasksFilter 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
           selectedPatient={selectedPatient}

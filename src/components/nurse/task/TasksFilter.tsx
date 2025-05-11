@@ -1,12 +1,10 @@
 
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PatientSelector from "@/components/orders/PatientSelector";
+import { useAuth } from "@/contexts/AuthContext";
+import { patients } from "@/data/mockData";
 
 interface TasksFilterProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
   statusFilter: string;
   setStatusFilter: (status: string) => void;
   selectedPatient: {id: string; name: string; mrn: string} | null;
@@ -16,8 +14,6 @@ interface TasksFilterProps {
 }
 
 const TasksFilter = ({
-  searchQuery,
-  setSearchQuery,
   statusFilter,
   setStatusFilter,
   selectedPatient,
@@ -25,28 +21,29 @@ const TasksFilter = ({
   selectedPatientId,
   setSelectedPatientId
 }: TasksFilterProps) => {
+  const { user } = useAuth();
+  
+  // Get list of patients assigned to the current nurse
+  const myPatients = patients.filter(p => p.nurseAssigned === user?.name).map(p => ({
+    id: p.id,
+    name: p.name,
+    mrn: p.mrn
+  }));
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-      <div className="col-span-1">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 items-center">
+      <div className="w-full">
         <PatientSelector 
           selectedPatient={selectedPatient}
           onPatientSelect={setSelectedPatient}
           selectedPatientId={selectedPatientId}
           onPatientIdChange={setSelectedPatientId}
+          myPatients={myPatients}
         />
       </div>
-      <div className="col-span-1">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search patients or tasks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8"
-          />
-        </div>
-      </div>
-      <div className="col-span-1">
+      
+      <div className="w-full">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger>
             <SelectValue placeholder="Filter by status" />
