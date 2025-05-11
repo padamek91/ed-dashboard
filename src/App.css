@@ -68,3 +68,71 @@ tr.assigned, .assigned {
   text-align: center;
   width: 4rem;
 }
+
+/* Medical result styling */
+.medical-red {
+  color: #ef4444;
+}
+
+.bg-medical-red {
+  background-color: #ef4444;
+}
+
+.border-medical-red {
+  border-color: #ef4444;
+}
+
+.abnormal-value {
+  color: #f97316;
+  font-weight: bold;
+}
+
+.critical-value {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-family: monospace;
+}
+
+.result-table th {
+  background-color: #f1f5f9;
+  padding: 0.5rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.result-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.result-table .result-name {
+  font-weight: 500;
+}
+
+.result-table .result-value {
+  text-align: right;
+}
+
+.result-table .result-units {
+  color: #64748b;
+}
+
+.result-table .result-reference {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.result-table .abnormal {
+  background-color: #fff7ed;
+}
+
+.result-table .critical {
+  background-color: #fef2f2;
+}
