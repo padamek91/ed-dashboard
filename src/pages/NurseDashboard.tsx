@@ -14,6 +14,7 @@ const NurseDashboardContent = () => {
 
   // Parse query parameters
   const queryParams = new URLSearchParams(location.search);
+  const patientId = queryParams.get('patientId');
 
   switch (location.pathname) {
     case '/nurse-dashboard/track-board':
@@ -37,7 +38,11 @@ const NurseDashboardContent = () => {
     // Log the active route for debugging
     console.log('Nurse active route:', location.pathname);
     console.log('Nurse active tab:', activeTab);
-  }, [location.pathname, activeTab]);
+    
+    if (patientId) {
+      console.log('Displaying details for patient ID:', patientId);
+    }
+  }, [location.pathname, activeTab, patientId]);
   
   return (
     <DashboardLayout activeTab={activeTab} role="nurse">

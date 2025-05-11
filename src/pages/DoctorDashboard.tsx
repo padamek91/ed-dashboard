@@ -48,7 +48,7 @@ const DoctorDashboardContent = () => {
     // If we have a result ID, we could handle special display logic here
     if (resultId) {
       console.log('Displaying result details for ID:', resultId);
-      // In a real app, you would fetch the specific result data and display it
+      // ResultsTab component will handle the display of the specific result
     }
   }, [location.pathname, activeTab, resultId]);
 
