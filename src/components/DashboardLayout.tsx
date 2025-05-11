@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { User, Bell, ClipboardList, Folder, Calendar } from 'lucide-react';
+import RoleSwitcher from './RoleSwitcher';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -109,11 +110,12 @@ const DashboardLayout = ({ children, activeTab, role }: DashboardLayoutProps) =>
           <div className="font-semibold text-lg">
             {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
+            <RoleSwitcher />
             <Button variant="ghost" size="icon" className="text-muted-foreground">
               <Bell size={20} />
             </Button>
-            <div className="ml-4">
+            <div>
               <div className="font-medium">{user?.name}</div>
               <div className="text-xs text-muted-foreground capitalize">{user?.role}</div>
             </div>

@@ -1,63 +1,62 @@
 
-import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { users, User } from '../data/mockData';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { users, User } from '@/data/mockData';
 
 interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => boolean;
   logout: () => void;
-  isAuthenticated: boolean;
+  switchRole: (role: 'doctor' | 'nurse') => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  login: () => false,
+  logout: () => {},
+  switchRole: () => {},
+});
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in via local storage
-    const storedUser = localStorage.getItem('ehr_user');
+    const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setIsAuthenticated(true);
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
-  const login = (username: string, password: string): boolean => {
-    const foundUser = users.find(
-      (u) => u.username === username && u.password === password
-    );
-
+  const login = (username: string, password: string) => {
+    const foundUser = users.find(u => u.username === username && u.password === password);
+    
     if (foundUser) {
       setUser(foundUser);
-      setIsAuthenticated(true);
-      // Store user in local storage (minus password)
-      const { password: _, ...userWithoutPassword } = foundUser;
-      localStorage.setItem('ehr_user', JSON.stringify(userWithoutPassword));
+      localStorage.setItem('user', JSON.stringify(foundUser));
       return true;
     }
+    
     return false;
   };
 
   const logout = () => {
     setUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('ehr_user');
+    localStorage.removeItem('user');
+  };
+
+  const switchRole = (role: 'doctor' | 'nurse') => {
+    // Find a user with the desired role
+    const newUser = users.find(u => u.role === role);
+    if (newUser) {
+      setUser(newUser);
+      localStorage.setItem('user', JSON.stringify(newUser));
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, login, logout, switchRole }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
+export const useAuth = () => useContext(AuthContext);
