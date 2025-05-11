@@ -12,6 +12,9 @@ const NurseDashboardContent = () => {
   let content;
   let activeTab;
 
+  // Parse query parameters
+  const queryParams = new URLSearchParams(location.search);
+
   switch (location.pathname) {
     case '/nurse-dashboard/track-board':
       content = <NurseTrackBoard />;

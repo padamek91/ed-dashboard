@@ -9,10 +9,10 @@ import { orders, patients } from '@/data/mockData';
 import { Search } from 'lucide-react';
 
 const ResultsTab = () => {
-  const [selectedPatient, setSelectedPatient] = useState('');
+  const [selectedPatient, setSelectedPatient] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [orderTypeFilter, setOrderTypeFilter] = useState('');
-  const [timeFilter, setTimeFilter] = useState('');
+  const [orderTypeFilter, setOrderTypeFilter] = useState('all');
+  const [timeFilter, setTimeFilter] = useState('any');
 
   // Get completed orders with results
   const completedOrders = orders.filter(order => order.status === 'Completed' && order.result);
@@ -22,12 +22,12 @@ const ResultsTab = () => {
     let matches = true;
     
     // Filter by patient if selected
-    if (selectedPatient && order.patientId !== selectedPatient) {
+    if (selectedPatient !== 'all' && order.patientId !== selectedPatient) {
       matches = false;
     }
     
     // Filter by order type if selected
-    if (orderTypeFilter && order.type !== orderTypeFilter) {
+    if (orderTypeFilter !== 'all' && order.type !== orderTypeFilter) {
       matches = false;
     }
     
@@ -46,7 +46,7 @@ const ResultsTab = () => {
     }
     
     // Filter by time if selected
-    if (timeFilter) {
+    if (timeFilter !== 'any') {
       const orderDate = new Date(order.completedAt || order.orderedAt);
       const now = new Date();
       const hoursDiff = (now.getTime() - orderDate.getTime()) / (1000 * 60 * 60);
@@ -82,6 +82,12 @@ const ResultsTab = () => {
     return date.toLocaleString();
   };
 
+  // Function to navigate to detailed view
+  const viewDetailedResult = (resultId: string) => {
+    // Navigate to the main results tab with the specific result ID
+    window.location.href = `/doctor-dashboard/results?id=${resultId}`;
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Results Review</h2>
@@ -104,7 +110,7 @@ const ResultsTab = () => {
                 <SelectValue placeholder="All Patients" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Patients</SelectItem>
+                <SelectItem value="all">All Patients</SelectItem>
                 {patients.map(patient => (
                   <SelectItem key={patient.id} value={patient.id}>
                     {patient.name}
@@ -118,7 +124,7 @@ const ResultsTab = () => {
                 <SelectValue placeholder="All Types" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="Lab">Labs</SelectItem>
                 <SelectItem value="Imaging">Imaging</SelectItem>
                 <SelectItem value="Medication">Medications</SelectItem>
@@ -131,7 +137,7 @@ const ResultsTab = () => {
                 <SelectValue placeholder="Any Time" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any Time</SelectItem>
+                <SelectItem value="any">Any Time</SelectItem>
                 <SelectItem value="4h">Last 4 hours</SelectItem>
                 <SelectItem value="12h">Last 12 hours</SelectItem>
                 <SelectItem value="24h">Last 24 hours</SelectItem>
@@ -192,7 +198,11 @@ const ResultsTab = () => {
                             </div>
                           </div>
                           <div className="mt-3 md:mt-0 md:text-right">
-                            <Button size="sm" variant="outline">
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => viewDetailedResult(result.id)}
+                            >
                               View Details
                             </Button>
                           </div>

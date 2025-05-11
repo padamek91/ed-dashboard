@@ -13,8 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 
 const NotesTab = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [patientFilter, setPatientFilter] = useState('');
-  const [noteTypeFilter, setNoteTypeFilter] = useState('');
+  const [patientFilter, setPatientFilter] = useState('all');
+  const [noteTypeFilter, setNoteTypeFilter] = useState('all');
   
   const [selectedPatient, setSelectedPatient] = useState('');
   const [selectedNoteType, setSelectedNoteType] = useState<'H&P' | 'MDM' | 'Progress' | 'Procedure' | 'Discharge'>('H&P');
@@ -28,11 +28,11 @@ const NotesTab = () => {
   const filteredNotes = notes.filter(note => {
     let matches = true;
     
-    if (patientFilter && note.patientId !== patientFilter) {
+    if (patientFilter !== 'all' && note.patientId !== patientFilter) {
       matches = false;
     }
     
-    if (noteTypeFilter && note.type !== noteTypeFilter) {
+    if (noteTypeFilter !== 'all' && note.type !== noteTypeFilter) {
       matches = false;
     }
     
@@ -207,7 +207,7 @@ const NotesTab = () => {
                 <SelectValue placeholder="All Patients" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Patients</SelectItem>
+                <SelectItem value="all">All Patients</SelectItem>
                 {patients.map(patient => (
                   <SelectItem key={patient.id} value={patient.id}>
                     {patient.name}
@@ -221,7 +221,7 @@ const NotesTab = () => {
                 <SelectValue placeholder="All Types" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="H&P">H&P</SelectItem>
                 <SelectItem value="MDM">MDM</SelectItem>
                 <SelectItem value="Progress">Progress</SelectItem>

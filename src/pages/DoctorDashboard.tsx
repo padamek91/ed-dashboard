@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import PatientList from '@/components/doctor/PatientList';
 import TrackBoard from '@/components/doctor/TrackBoard';
@@ -10,8 +10,13 @@ import NotesTab from '@/components/doctor/NotesTab';
 
 const DoctorDashboardContent = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   let content;
   let activeTab;
+
+  // Parse query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const resultId = queryParams.get('id');
 
   switch (location.pathname) {
     case '/doctor-dashboard/track-board':
@@ -39,7 +44,13 @@ const DoctorDashboardContent = () => {
     // Log the active route for debugging
     console.log('Active route:', location.pathname);
     console.log('Active tab:', activeTab);
-  }, [location.pathname, activeTab]);
+    
+    // If we have a result ID, we could handle special display logic here
+    if (resultId) {
+      console.log('Displaying result details for ID:', resultId);
+      // In a real app, you would fetch the specific result data and display it
+    }
+  }, [location.pathname, activeTab, resultId]);
 
   return (
     <DashboardLayout activeTab={activeTab} role="doctor">
