@@ -17,6 +17,7 @@ export interface LabOrder {
   result?: string;
   abnormal?: boolean;
   critical?: boolean;
+  taskType?: string;
   acknowledgements?: {
     by: string;
     role: string;
@@ -33,6 +34,7 @@ export interface MedicationOrder {
   urgent: boolean;
   status: string;
   timestamp: string;
+  taskType?: string;
 }
 
 interface OrdersContextType {
@@ -68,8 +70,19 @@ const OrdersContext = createContext<OrdersContextType>({
 });
 
 export const OrdersProvider = ({ children }: { children: ReactNode }) => {
-  const [labOrders, setLabOrders] = useState<LabOrder[]>(initialLabOrders);
-  const [medicationOrders, setMedicationOrders] = useState<MedicationOrder[]>(initialMedicationOrders);
+  // Convert data to match our interfaces
+  const initialLabOrdersTyped: LabOrder[] = initialLabOrders.map(order => ({
+    ...order,
+    urgent: order.urgent || false, // Ensure urgent is defined for all orders
+  }));
+
+  const initialMedicationOrdersTyped: MedicationOrder[] = initialMedicationOrders.map(order => ({
+    ...order,
+    urgent: order.urgent || false, // Ensure urgent is defined for all orders
+  }));
+
+  const [labOrders, setLabOrders] = useState<LabOrder[]>(initialLabOrdersTyped);
+  const [medicationOrders, setMedicationOrders] = useState<MedicationOrder[]>(initialMedicationOrdersTyped);
   const [hasCriticalResults, setHasCriticalResults] = useState(false);
   const { toast: uiToast } = useToast();
   const { user } = useAuth();
