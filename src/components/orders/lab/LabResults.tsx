@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import OrdersTable from '../OrdersTable';
 import { filterOrdersByPatient } from '@/utils/orderUtils';
 import { LabOrder } from '@/contexts/OrdersContext';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 interface LabResultsProps {
   orders: LabOrder[];
@@ -21,10 +21,10 @@ const LabResults = memo(({ orders, selectedPatient }: LabResultsProps) => {
     ? filterOrdersByPatient(completedOrders, selectedPatient)
     : completedOrders;
   
-  // Handle row click to navigate to detailed result view
-  const handleRowClick = (orderId: string) => {
+  // Handle row click to navigate to detailed result view - use useCallback to prevent rerenders
+  const handleRowClick = useCallback((orderId: string) => {
     navigate(`/doctor-dashboard/results?id=${orderId}`);
-  };
+  }, [navigate]);
   
   return (
     <OrdersTable 

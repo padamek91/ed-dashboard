@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { labOrders as initialLabOrders, medicationOrders as initialMedicationOrders, labTests } from '@/data/ordersMockData';
 import { useToast } from '@/hooks/use-toast';
@@ -228,13 +227,16 @@ const generateRandomLabResult = (testName: string, isAbnormal: boolean = Math.ra
   // Format the result
   const value = test.value();
   
+  // Convert number to string to ensure we return only strings (fix TypeScript error)
+  const valueString = typeof value === 'number' ? value.toString() : value;
+  
   // For simple single-value tests, format as "value: units (Reference Range: range)"
-  if (typeof value === 'string' && !value.includes('\n')) {
-    return `${value} ${test.units} (Reference Range: ${test.range})`;
+  if (!valueString.includes('\n')) {
+    return `${valueString} ${test.units} (Reference Range: ${test.range})`;
   }
   
   // For multi-line results, return as is
-  return value;
+  return valueString;
 };
 
 // Helper function to generate a random timestamp within the past 20 days
@@ -255,7 +257,10 @@ const generateRandomTimestamp = (withinHours: number = 480) => { // 480 hours = 
 
 export const OrdersProvider = ({ children }: { children: ReactNode }) => {
   const [labOrders, setLabOrders] = useState<LabOrder[]>([]);
-  const [medicationOrders, setMedicationOrders] = useState<MedicationOrder[]>(initialMedicationOrders);
+  const [medicationOrders, setMedicationOrders] = useState<MedicationOrder[]>(initialMedicationOrders.map(order => ({
+    ...order,
+    urgent: order.urgent || false // Ensure urgent is never undefined
+  })));
   const [hasCriticalResults, setHasCriticalResults] = useState(false);
   const { toast: uiToast } = useToast();
   const { user } = useAuth();
@@ -270,8 +275,8 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
       const patient = patients.find(p => p.id === patientId);
       if (!patient) return;
       
-      // Generate 10-15 test results per patient
-      const numTests = Math.floor(Math.random() * 6) + 10; // 10-15 tests
+      // Generate 15-20 test results per patient (increased from 10-15)
+      const numTests = Math.floor(Math.random() * 6) + 15; // 15-20 tests
       const testsToGenerate = [];
       
       // Make sure at least 2 tests are within the last 24 hours
@@ -299,7 +304,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
       );
       
       // Now select test types and generate results
-      testsToGenerate.forEach((test, index) => {
+      testsToGenerate.forEach((test) => {
         // Select a test type - ensure some variety
         const testType = labTests[Math.floor(Math.random() * labTests.length)];
         

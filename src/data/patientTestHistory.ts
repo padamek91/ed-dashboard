@@ -11,9 +11,8 @@ export type TestHistory = {
   critical?: boolean;
 }
 
-// Collection of test histories per patient
+// Collection of test histories per patient - initially empty
 export const patientTestHistory: Record<string, TestHistory[]> = {
-  // Initially empty - will be populated by OrdersContext
   '10001': [], // Michael Johnson
   '10002': [], // Emily Rodriguez
   '10003': [], // David Williams
