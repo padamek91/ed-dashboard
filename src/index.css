@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 217 91% 60%;
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -35,16 +35,6 @@
 
     --radius: 0.5rem;
     
-    /* Sidebar Colors */
-    --sidebar-background: 222.2 47.4% 11.2%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 210 40% 98%;
-    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
-    --sidebar-accent: 217 91% 60%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 21% 25%;
-    --sidebar-ring: 222.2 84% 4.9%;
-    
     /* Medical specific colors */
     --medical-red: 354 91% 54%;
     --medical-orange: 32 95% 44%;
@@ -63,7 +53,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%;
+    --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -81,23 +71,6 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    
-    /* Sidebar Colors - Dark Mode */
-    --sidebar-background: 222.2 47.4% 11.2%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 210 40% 98%;
-    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
-    --sidebar-accent: 217 91% 60%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 21% 25%;
-    --sidebar-ring: 222.2 84% 4.9%;
-    
-    /* Medical specific colors - Dark Mode */
-    --medical-red: 354 91% 65%;
-    --medical-orange: 32 95% 55%;
-    --medical-green: 142 72% 40%;
-    --medical-blue: 217 91% 70%;
-    --medical-purple: 262 83% 68%;
   }
 }
 
@@ -107,20 +80,5 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-@layer utilities {
-  .bg-medical-blue {
-    @apply bg-[#3B82F6];
-  }
-  .text-medical-blue {
-    @apply text-[#3B82F6];
-  }
-  .border-medical-blue {
-    @apply border-[#3B82F6];
-  }
-  .hover\:bg-medical-blue-dark:hover {
-    @apply hover:bg-[#2563EB];
   }
 }

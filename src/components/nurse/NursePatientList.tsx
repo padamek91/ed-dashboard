@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { patients, Patient } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,7 +11,6 @@ import { Search, User } from 'lucide-react';
 
 const NursePatientList = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [showOnlyMyPatients, setShowOnlyMyPatients] = useState(false);
   
@@ -43,24 +41,7 @@ const NursePatientList = () => {
 
   // Helper function to render acuity level with appropriate styling
   const renderAcuityLevel = (level: number) => {
-    let bgColor = '';
-    switch(level) {
-      case 1: bgColor = 'bg-red-500'; break;
-      case 2: bgColor = 'bg-orange-500'; break;
-      case 3: bgColor = 'bg-yellow-500'; break;
-      case 4: bgColor = 'bg-green-500'; break;
-      case 5: bgColor = 'bg-blue-500'; break;
-    }
-    return (
-      <div className={`${bgColor} text-white text-center py-1 px-2 rounded-md w-16`}>
-        ESI {level}
-      </div>
-    );
-  };
-
-  // Function to navigate to tasks with patient selected
-  const handlePatientClick = (patientId: string) => {
-    navigate(`/nurse-dashboard/tasks?patientId=${patientId}`);
+    return <div className={`acuity-${level}`}>ESI {level}</div>;
   };
 
   return (
@@ -98,56 +79,48 @@ const NursePatientList = () => {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-50 border-b">
+            <table className="ehr-table">
+              <thead>
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age / DOB</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sex</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MRN</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chief Complaint</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Arrival Time</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time in ED</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acuity</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Physician</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nurse</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th>Patient Name</th>
+                  <th>Age / DOB</th>
+                  <th>Sex</th>
+                  <th>MRN</th>
+                  <th>Chief Complaint</th>
+                  <th>Arrival Time</th>
+                  <th>Time in ED</th>
+                  <th>Acuity</th>
+                  <th>Location</th>
+                  <th>Physician</th>
+                  <th>Nurse</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredPatients.map((patient, idx) => (
+              <tbody>
+                {filteredPatients.map((patient) => (
                   <tr 
                     key={patient.id}
-                    className={`
-                      ${isPatientAssignedToMe(patient) ? 'bg-blue-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                      hover:bg-blue-50 transition-colors duration-150
-                    `}
+                    className={isPatientAssignedToMe(patient) ? 'assigned' : ''}
                   >
-                    <td className="px-4 py-3 text-sm font-medium">{patient.name}</td>
-                    <td className="px-4 py-3 text-sm">{patient.age} / {patient.dateOfBirth}</td>
-                    <td className="px-4 py-3 text-sm">{patient.sex}</td>
-                    <td className="px-4 py-3 text-sm">{patient.mrn}</td>
-                    <td className="px-4 py-3 text-sm">{patient.chiefComplaint}</td>
-                    <td className="px-4 py-3 text-sm">{formatTime(patient.arrivalTime)}</td>
-                    <td className="px-4 py-3 text-sm">{patient.timeInED}</td>
-                    <td className="px-4 py-3">{renderAcuityLevel(patient.triageLevel)}</td>
-                    <td className="px-4 py-3 text-sm">{patient.location}</td>
-                    <td className="px-4 py-3 text-sm">{patient.attendingPhysician}</td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="font-medium">{patient.name}</td>
+                    <td>{patient.age} / {patient.dateOfBirth}</td>
+                    <td>{patient.sex}</td>
+                    <td>{patient.mrn}</td>
+                    <td>{patient.chiefComplaint}</td>
+                    <td>{formatTime(patient.arrivalTime)}</td>
+                    <td>{patient.timeInED}</td>
+                    <td>{renderAcuityLevel(patient.triageLevel)}</td>
+                    <td>{patient.location}</td>
+                    <td>{patient.attendingPhysician}</td>
+                    <td>
                       {patient.nurseAssigned === user?.name ? (
                         <span className="font-medium">{patient.nurseAssigned}</span>
                       ) : (
                         patient.nurseAssigned
                       )}
                     </td>
-                    <td className="px-4 py-3">
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="h-8 w-8 p-0"
-                        onClick={() => handlePatientClick(patient.id)}
-                      >
+                    <td>
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0">
                         <User className="h-4 w-4" />
                         <span className="sr-only">Patient Details</span>
                       </Button>

@@ -7,20 +7,9 @@ import OrdersTable from './OrdersTable';
 import { filterOrdersByPatient } from '@/utils/orderUtils';
 import { Separator } from '@/components/ui/separator';
 
-interface MedicationOrdersProps {
-  patientId?: string;
-}
-
-const MedicationOrders = ({ patientId }: MedicationOrdersProps) => {
-  const [selectedPatientId, setSelectedPatientId] = useState<string>(patientId || '');
+const MedicationOrders = () => {
+  const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [selectedPatient, setSelectedPatient] = useState<{id: string; name: string; mrn: string} | null>(null);
-  
-  // Update selected patient if patientId prop changes
-  useEffect(() => {
-    if (patientId) {
-      setSelectedPatientId(patientId);
-    }
-  }, [patientId]);
   
   return (
     <Card>

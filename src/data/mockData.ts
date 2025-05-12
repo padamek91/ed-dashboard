@@ -1,3 +1,4 @@
+
 export type User = {
   id: string;
   name: string;
@@ -75,7 +76,7 @@ export const users: User[] = [
   },
 ];
 
-// Mock patients - expanded list
+// Mock patients
 export const patients: Patient[] = [
   {
     id: '1',
@@ -197,98 +198,6 @@ export const patients: Patient[] = [
     attendingPhysician: 'Dr. John Smith',
     nurseAssigned: 'Nurse Sarah Johnson',
   },
-  
-  // Additional patients
-  {
-    id: '9',
-    name: 'Alexander Kim',
-    age: 34,
-    dateOfBirth: '1991-02-15',
-    sex: 'Male',
-    mrn: 'MRN90123',
-    chiefComplaint: 'Lower back pain',
-    arrivalTime: '2023-05-10T08:15:00',
-    timeInED: '2h 40m',
-    triageLevel: 3,
-    location: 'Room 9',
-    attendingPhysician: 'Dr. John Smith',
-    nurseAssigned: 'Nurse Sarah Johnson',
-  },
-  {
-    id: '10',
-    name: 'Olivia Parker',
-    age: 27,
-    dateOfBirth: '1998-07-22',
-    sex: 'Female',
-    mrn: 'MRN01234',
-    chiefComplaint: 'Severe headache',
-    arrivalTime: '2023-05-10T09:10:00',
-    timeInED: '1h 40m',
-    triageLevel: 2,
-    location: 'Room 11',
-    attendingPhysician: 'Dr. John Smith',
-    nurseAssigned: 'Nurse Sarah Johnson',
-  },
-  {
-    id: '11',
-    name: 'William Chen',
-    age: 62,
-    dateOfBirth: '1963-04-03',
-    sex: 'Male',
-    mrn: 'MRN12345',
-    chiefComplaint: 'Dizziness, nausea',
-    arrivalTime: '2023-05-10T10:30:00',
-    timeInED: '0h 15m',
-    triageLevel: 3,
-    location: 'Room 14',
-    attendingPhysician: 'Dr. Maria Gonzalez',
-    nurseAssigned: 'Nurse Thomas Jackson',
-  },
-  {
-    id: '12',
-    name: 'Isabella Rodriguez',
-    age: 5,
-    dateOfBirth: '2020-01-12',
-    sex: 'Female',
-    mrn: 'MRN23456',
-    chiefComplaint: 'High fever, rash',
-    arrivalTime: '2023-05-10T07:50:00',
-    timeInED: '2h 55m',
-    triageLevel: 2,
-    location: 'Peds Room 2',
-    attendingPhysician: 'Dr. Maria Gonzalez',
-    nurseAssigned: 'Nurse Sarah Johnson',
-  },
-  {
-    id: '13',
-    name: 'George Washington',
-    age: 78,
-    dateOfBirth: '1947-11-28',
-    sex: 'Male',
-    mrn: 'MRN34567',
-    chiefComplaint: 'Chest pain, arm numbness',
-    arrivalTime: '2023-05-10T08:25:00',
-    timeInED: '2h 30m',
-    triageLevel: 1,
-    location: 'Room 1',
-    attendingPhysician: 'Dr. John Smith',
-    nurseAssigned: 'Nurse Robert Chen',
-  },
-  {
-    id: '14',
-    name: 'Sophia Patel',
-    age: 42,
-    dateOfBirth: '1983-08-05',
-    sex: 'Female',
-    mrn: 'MRN45678',
-    chiefComplaint: 'Abdominal pain, vomiting',
-    arrivalTime: '2023-05-10T09:40:00',
-    timeInED: '1h 15m',
-    triageLevel: 3,
-    location: 'Room 6',
-    attendingPhysician: 'Dr. Maria Gonzalez',
-    nurseAssigned: 'Nurse Robert Chen',
-  }
 ];
 
 // Mock orders

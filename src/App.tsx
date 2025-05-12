@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { OrdersProvider } from "./contexts/OrdersContext";
+import { CriticalResultAlert } from "./components/alerts/CriticalResultAlert";
 import Login from "./pages/Login";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import NurseDashboard from "./pages/NurseDashboard";
@@ -47,8 +48,11 @@ const DashboardRouter = () => {
 };
 
 const AppRoutes = () => {
+  const { user } = useAuth();
+  
   return (
     <>
+      {user?.role === 'doctor' && <CriticalResultAlert />}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />

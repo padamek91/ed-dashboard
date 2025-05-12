@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { consultOrders } from '@/data/ordersMockData';
 import PatientSelector from './PatientSelector';
@@ -7,20 +7,9 @@ import OrdersTable from './OrdersTable';
 import { filterOrdersByPatient } from '@/utils/orderUtils';
 import { Separator } from '@/components/ui/separator';
 
-interface ConsultOrdersProps {
-  patientId?: string;
-}
-
-const ConsultOrders = ({ patientId }: ConsultOrdersProps) => {
-  const [selectedPatientId, setSelectedPatientId] = useState<string>(patientId || '');
+const ConsultOrders = () => {
+  const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [selectedPatient, setSelectedPatient] = useState<{id: string; name: string; mrn: string} | null>(null);
-  
-  // Update selected patient if patientId prop changes
-  useEffect(() => {
-    if (patientId) {
-      setSelectedPatientId(patientId);
-    }
-  }, [patientId]);
   
   return (
     <Card>

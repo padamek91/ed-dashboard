@@ -6,7 +6,6 @@ import NursePatientList from '@/components/nurse/NursePatientList';
 import NurseTrackBoard from '@/components/nurse/NurseTrackBoard';
 import NurseTasks from '@/components/nurse/NurseTasks';
 import NurseVitals from '@/components/nurse/NurseVitals';
-import { patients } from '@/data/mockData';
 
 const NurseDashboardContent = () => {
   const location = useLocation();
@@ -23,7 +22,7 @@ const NurseDashboardContent = () => {
       activeTab = 'track board';
       break;
     case '/nurse-dashboard/tasks':
-      content = <NurseTasks initialPatientId={patientId || ''} />;
+      content = <NurseTasks />;
       activeTab = 'tasks';
       break;
     case '/nurse-dashboard/vitals':
@@ -41,12 +40,7 @@ const NurseDashboardContent = () => {
     console.log('Nurse active tab:', activeTab);
     
     if (patientId) {
-      const selectedPatient = patients.find(p => p.id === patientId);
-      if (selectedPatient) {
-        console.log('Displaying details for patient:', selectedPatient.name);
-      } else {
-        console.log('Patient not found for ID:', patientId);
-      }
+      console.log('Displaying details for patient ID:', patientId);
     }
   }, [location.pathname, activeTab, patientId]);
   

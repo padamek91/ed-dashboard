@@ -1,19 +1,143 @@
 
 import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import PatientSelector from '@/components/orders/PatientSelector';
 import { useAuth } from '@/contexts/AuthContext';
 import { useOrders } from '@/contexts/OrdersContext';
 import { patients } from '@/data/mockData';
-import TasksFilter from './task/TasksFilter';
-import TasksList from './task/TasksList';
-import { Task, initialNurseTasks } from './task/types';
 
-interface NurseTasksProps {
-  initialPatientId?: string;
+// Task type definition
+interface Task {
+  id: string;
+  patientId: string;
+  patientName: string;
+  patientMrn: string;
+  task: string;
+  status: string;
+  dueTime: string;
+  priority: 'high' | 'medium' | 'low';
+  assignedTo: string;
+  completedAt: string | null;
+  taskType: 'lab' | 'medication' | 'other';
+  orderId?: string;
 }
 
-const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
+// Sample nurse tasks with taskType added
+const initialNurseTasks: Task[] = [
+  {
+    id: '1',
+    patientId: '1',
+    patientName: 'Michael Johnson',
+    patientMrn: 'MRN12345',
+    task: 'Administer Aspirin 325mg',
+    status: 'pending',
+    dueTime: '2025-05-11T09:15:00',
+    priority: 'high',
+    assignedTo: 'Nurse Sarah Johnson',
+    completedAt: null,
+    taskType: 'medication'
+  },
+  {
+    id: '2',
+    patientId: '1',
+    patientName: 'Michael Johnson',
+    patientMrn: 'MRN12345',
+    task: 'Check vital signs',
+    status: 'pending',
+    dueTime: '2025-05-11T09:30:00',
+    priority: 'medium',
+    assignedTo: 'Nurse Sarah Johnson',
+    completedAt: null,
+    taskType: 'other'
+  },
+  {
+    id: '3',
+    patientId: '2',
+    patientName: 'Emily Rodriguez',
+    patientMrn: 'MRN23456',
+    task: 'Collect blood sample for labs',
+    status: 'pending',
+    dueTime: '2025-05-11T10:15:00',
+    priority: 'medium',
+    assignedTo: 'Nurse Sarah Johnson',
+    completedAt: null,
+    taskType: 'lab'
+  },
+  {
+    id: '4',
+    patientId: '3',
+    patientName: 'David Williams',
+    patientMrn: 'MRN34567',
+    task: 'Monitor oxygen saturation',
+    status: 'pending',
+    dueTime: '2025-05-11T08:00:00',
+    priority: 'high',
+    assignedTo: 'Nurse Sarah Johnson',
+    completedAt: null,
+    taskType: 'other'
+  },
+  {
+    id: '5',
+    patientId: '3',
+    patientName: 'David Williams',
+    patientMrn: 'MRN34567',
+    task: 'Administer nebulizer treatment',
+    status: 'pending',
+    dueTime: '2025-05-11T08:30:00',
+    priority: 'high',
+    assignedTo: 'Nurse Sarah Johnson',
+    completedAt: null,
+    taskType: 'medication'
+  },
+  {
+    id: '6',
+    patientId: '5',
+    patientName: 'Robert Johnson',
+    patientMrn: 'MRN56789',
+    task: 'Administer antipyretic medication',
+    status: 'completed',
+    dueTime: '2025-05-11T09:00:00',
+    priority: 'medium',
+    assignedTo: 'Nurse Sarah Johnson',
+    completedAt: '2025-05-11T09:05:00',
+    taskType: 'medication'
+  },
+  {
+    id: '7',
+    patientId: '4',
+    patientName: 'Sophia Lee',
+    patientMrn: 'MRN45678',
+    task: 'Clean and dress laceration',
+    status: 'completed',
+    dueTime: '2025-05-11T10:30:00',
+    priority: 'medium',
+    assignedTo: 'Nurse Thomas Jackson',
+    completedAt: '2025-05-11T10:35:00',
+    taskType: 'other'
+  },
+  {
+    id: '8',
+    patientId: '6',
+    patientName: 'Lisa Martinez',
+    patientMrn: 'MRN67890',
+    task: 'Administer pain medication',
+    status: 'pending',
+    dueTime: '2025-05-11T10:00:00',
+    priority: 'high',
+    assignedTo: 'Nurse Robert Chen',
+    completedAt: null,
+    taskType: 'medication'
+  }
+];
+
+const NurseTasks = () => {
   const { user } = useAuth();
   const { labOrders, medicationOrders, acknowledgeLabOrder, printLabels, collectLabSpecimen } = useOrders();
   
@@ -22,22 +146,7 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
   const [selectedPatient, setSelectedPatient] = useState<{id: string; name: string; mrn: string} | null>(null);
   const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  
-  // Set initial patient if provided
-  useEffect(() => {
-    if (initialPatientId) {
-      const patient = patients.find(p => p.id === initialPatientId);
-      if (patient) {
-        setSelectedPatientId(patient.id);
-        setSelectedPatient({
-          id: patient.id,
-          name: patient.name,
-          mrn: patient.mrn
-        });
-        console.log('Initially selected patient:', patient.name);
-      }
-    }
-  }, [initialPatientId]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   
   // Convert lab orders to tasks
   useEffect(() => {
@@ -51,10 +160,10 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
         task: `Process lab: ${order.type}`,
         status: order.status === 'order placed' ? 'pending' : 'in progress',
         dueTime: new Date(order.timestamp).toISOString(),
-        priority: order.urgent ? 'high' as const : 'medium' as const,
+        priority: order.urgent ? 'high' : 'medium',
         assignedTo: user?.name || 'Nurse',
         completedAt: null,
-        taskType: 'lab' as const,
+        taskType: 'lab',
         orderId: order.id
       }));
 
@@ -69,10 +178,10 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
         task: `Administer: ${order.type}`,
         status: 'pending',
         dueTime: new Date(order.timestamp).toISOString(),
-        priority: order.urgent ? 'high' as const : 'medium' as const,
+        priority: order.urgent ? 'high' : 'medium',
         assignedTo: user?.name || 'Nurse',
         completedAt: null,
-        taskType: 'medication' as const,
+        taskType: 'medication',
         orderId: order.id
       }));
     
@@ -80,9 +189,20 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
     setTasks([...initialNurseTasks, ...labTasks, ...medicationTasks]);
   }, [labOrders, medicationOrders, user]);
   
+  // Filter tasks based on search query
+  const searchFilteredTasks = tasks.filter(task => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      task.task.toLowerCase().includes(query) ||
+      task.patientName.toLowerCase().includes(query) ||
+      task.patientMrn.toLowerCase().includes(query)
+    );
+  });
+  
   // Filter tasks based on active tab, patient selection, and status filter
   const getFilteredTasks = () => {
-    let filtered = tasks;
+    let filtered = searchFilteredTasks;
     
     // Filter by task type based on active tab
     if (activeTab !== 'all') {
@@ -92,7 +212,6 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
     // Filter by patient if selected
     if (selectedPatient) {
       filtered = filtered.filter(task => 
-        task.patientId === selectedPatient.id || 
         task.patientName === selectedPatient.name || 
         task.patientMrn === selectedPatient.mrn
       );
@@ -118,9 +237,9 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
   const filteredTasks = getFilteredTasks();
   
   // Count pending tasks by type for badges
-  const pendingLabTasks = tasks.filter(task => task.taskType === 'lab' && task.status === 'pending').length;
-  const pendingMedTasks = tasks.filter(task => task.taskType === 'medication' && task.status === 'pending').length;
-  const pendingAllTasks = tasks.filter(task => task.status === 'pending').length;
+  const pendingLabTasks = searchFilteredTasks.filter(task => task.taskType === 'lab' && task.status === 'pending').length;
+  const pendingMedTasks = searchFilteredTasks.filter(task => task.taskType === 'medication' && task.status === 'pending').length;
+  const pendingAllTasks = searchFilteredTasks.filter(task => task.status === 'pending').length;
 
   // Function to toggle task completion
   const toggleTaskStatus = (taskId: string) => {
@@ -189,7 +308,7 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
           <TabsTrigger value="all" className="relative">
             All Tasks
             {pendingAllTasks > 0 && (
-              <Badge className="ml-1 bg-medical-blue text-white absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">
+              <Badge className="ml-1 bg-red-500 text-white absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">
                 {pendingAllTasks}
               </Badge>
             )}
@@ -197,7 +316,7 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
           <TabsTrigger value="lab" className="relative">
             Lab Orders
             {pendingLabTasks > 0 && (
-              <Badge className="ml-1 bg-medical-blue text-white absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">
+              <Badge className="ml-1 bg-red-500 text-white absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">
                 {pendingLabTasks}
               </Badge>
             )}
@@ -205,7 +324,7 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
           <TabsTrigger value="medication" className="relative">
             Medication Orders
             {pendingMedTasks > 0 && (
-              <Badge className="ml-1 bg-medical-blue text-white absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">
+              <Badge className="ml-1 bg-red-500 text-white absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">
                 {pendingMedTasks}
               </Badge>
             )}
@@ -213,14 +332,42 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
         </TabsList>
 
         {/* Filter Bar */}
-        <TasksFilter 
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          selectedPatient={selectedPatient}
-          setSelectedPatient={setSelectedPatient}
-          selectedPatientId={selectedPatientId}
-          setSelectedPatientId={setSelectedPatientId}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div className="col-span-1">
+            <PatientSelector 
+              selectedPatient={selectedPatient}
+              onPatientSelect={setSelectedPatient}
+              selectedPatientId={selectedPatientId}
+              onPatientIdChange={setSelectedPatientId}
+            />
+          </div>
+          <div className="col-span-1">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search patients or tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+          </div>
+          <div className="col-span-1">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
         <TabsContent value="all">
           <TasksList 
@@ -265,6 +412,139 @@ const NurseTasks = ({ initialPatientId = '' }: NurseTasksProps) => {
         </TabsContent>
       </Tabs>
     </div>
+  );
+};
+
+// Extracted TasksList component to avoid repetition
+interface TasksListProps {
+  tasks: Task[];
+  toggleTaskStatus: (id: string) => void;
+  formatDueTime: (time: string) => string;
+  getTimeStatus: (time: string) => { label: string; class: string };
+  emptyMessage: string;
+  title: string;
+  handleLabAction: (taskId: string, orderId: string, action: string) => void;
+  getLabOrder: (orderId?: string) => any;
+  labOrders: any[];
+}
+
+const TasksList = ({ 
+  tasks, 
+  toggleTaskStatus, 
+  formatDueTime, 
+  getTimeStatus, 
+  emptyMessage,
+  title,
+  handleLabAction,
+  getLabOrder,
+  labOrders
+}: TasksListProps) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {tasks.length > 0 ? (
+          <div className="space-y-4">
+            {tasks.map(task => {
+              const timeStatus = getTimeStatus(task.dueTime);
+              const labOrder = task.orderId ? getLabOrder(task.orderId) : null;
+              
+              return (
+                <div 
+                  key={task.id} 
+                  className={`p-4 border rounded-md flex items-start gap-3 ${
+                    task.status === 'completed' ? 'bg-muted/30' : ''
+                  }`}
+                >
+                  {task.taskType !== 'lab' && (
+                    <Checkbox
+                      id={`task-${task.id}`}
+                      checked={task.status === 'completed'}
+                      onCheckedChange={() => toggleTaskStatus(task.id)}
+                    />
+                  )}
+                  <div className="flex-grow">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                      <label 
+                        htmlFor={`task-${task.id}`}
+                        className={`font-medium ${task.status === 'completed' ? 'line-through text-muted-foreground' : ''}`}
+                      >
+                        {task.task}
+                      </label>
+                      <div className="flex items-center gap-2 mt-1 sm:mt-0">
+                        {task.priority === 'high' && task.status !== 'completed' && (
+                          <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded">
+                            High Priority
+                          </span>
+                        )}
+                        {task.status !== 'completed' && (
+                          <span className={`text-xs ${timeStatus.class}`}>
+                            {timeStatus.label}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      Patient: {task.patientName}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {task.status === 'completed' 
+                        ? `Completed at ${new Date(task.completedAt!).toLocaleTimeString()}` 
+                        : `Due at ${formatDueTime(task.dueTime)}`}
+                    </div>
+                    
+                    {/* Lab workflow buttons */}
+                    {task.taskType === 'lab' && task.orderId && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {labOrder?.status === 'order placed' && (
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleLabAction(task.id, task.orderId!, 'acknowledge')}
+                          >
+                            Acknowledge Order
+                          </Button>
+                        )}
+                        
+                        {labOrder?.status === 'acknowledged by nurse' && (
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleLabAction(task.id, task.orderId!, 'print')}
+                          >
+                            Print Labels
+                          </Button>
+                        )}
+                        
+                        {labOrder?.status === 'labels printed' && (
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleLabAction(task.id, task.orderId!, 'collect')}
+                          >
+                            Document Collection
+                          </Button>
+                        )}
+                        
+                        {labOrder?.status === 'collected' && (
+                          <Badge className="bg-amber-500">Specimen Collected - Awaiting Processing</Badge>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">
+            {emptyMessage}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

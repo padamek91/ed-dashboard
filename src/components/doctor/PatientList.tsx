@@ -1,24 +1,16 @@
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { patients, Patient } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Search, ChevronDown } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Search, User } from 'lucide-react';
 
 const PatientList = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [showOnlyMyPatients, setShowOnlyMyPatients] = useState(false);
   
@@ -49,24 +41,7 @@ const PatientList = () => {
 
   // Helper function to render acuity level with appropriate styling
   const renderAcuityLevel = (level: number) => {
-    let bgColor = '';
-    switch(level) {
-      case 1: bgColor = 'bg-red-500'; break;
-      case 2: bgColor = 'bg-orange-500'; break;
-      case 3: bgColor = 'bg-yellow-500'; break;
-      case 4: bgColor = 'bg-green-500'; break;
-      case 5: bgColor = 'bg-blue-500'; break;
-    }
-    return (
-      <div className={`${bgColor} text-white text-center py-1 px-2 rounded-md w-16`}>
-        ESI {level}
-      </div>
-    );
-  };
-
-  // Function to handle navigation to orders tab with selected patient
-  const handleOrdersNavigation = (patientId: string, orderType: string) => {
-    navigate(`/doctor-dashboard/orders?patient=${patientId}&tab=${orderType.toLowerCase()}`);
+    return <div className={`acuity-${level}`}>ESI {level}</div>;
   };
 
   return (
@@ -104,71 +79,51 @@ const PatientList = () => {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full table-fixed">
-              <thead className="bg-slate-50 border-b">
+            <table className="ehr-table">
+              <thead>
                 <tr>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[14%]">Patient Name</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[10%]">Age / DOB</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[5%]">Sex</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">MRN</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[15%]">Chief Complaint</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">Arrival</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">Time in ED</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[6%]">Acuity</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[6%]">Location</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">MD</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">RN</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[4%]">Act</th>
+                  <th>Patient Name</th>
+                  <th>Age / DOB</th>
+                  <th>Sex</th>
+                  <th>MRN</th>
+                  <th>Chief Complaint</th>
+                  <th>Arrival Time</th>
+                  <th>Time in ED</th>
+                  <th>Acuity</th>
+                  <th>Location</th>
+                  <th>Physician</th>
+                  <th>Nurse</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredPatients.map((patient, idx) => (
+              <tbody>
+                {filteredPatients.map((patient) => (
                   <tr 
                     key={patient.id}
-                    className={`
-                      ${isPatientAssignedToMe(patient) ? 'bg-blue-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                      hover:bg-blue-50 transition-colors duration-150 text-sm
-                    `}
+                    className={isPatientAssignedToMe(patient) ? 'assigned' : ''}
                   >
-                    <td className="px-2 py-2 font-medium truncate">{patient.name}</td>
-                    <td className="px-2 py-2 truncate">{patient.age} / {patient.dateOfBirth}</td>
-                    <td className="px-2 py-2">{patient.sex}</td>
-                    <td className="px-2 py-2">{patient.mrn}</td>
-                    <td className="px-2 py-2 truncate">{patient.chiefComplaint}</td>
-                    <td className="px-2 py-2">{formatTime(patient.arrivalTime)}</td>
-                    <td className="px-2 py-2">{patient.timeInED}</td>
-                    <td className="px-2 py-2">{renderAcuityLevel(patient.triageLevel)}</td>
-                    <td className="px-2 py-2">{patient.location}</td>
-                    <td className="px-2 py-2 truncate">
+                    <td className="font-medium">{patient.name}</td>
+                    <td>{patient.age} / {patient.dateOfBirth}</td>
+                    <td>{patient.sex}</td>
+                    <td>{patient.mrn}</td>
+                    <td>{patient.chiefComplaint}</td>
+                    <td>{formatTime(patient.arrivalTime)}</td>
+                    <td>{patient.timeInED}</td>
+                    <td>{renderAcuityLevel(patient.triageLevel)}</td>
+                    <td>{patient.location}</td>
+                    <td>
                       {patient.attendingPhysician === user?.name ? (
                         <span className="font-medium">{patient.attendingPhysician}</span>
                       ) : (
                         patient.attendingPhysician
                       )}
                     </td>
-                    <td className="px-2 py-2 truncate">{patient.nurseAssigned}</td>
-                    <td className="px-2 py-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="sm" variant="outline" className="h-7 px-2 py-0">
-                            <ChevronDown className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem onClick={() => handleOrdersNavigation(patient.id, 'Lab')}>
-                            Labs
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOrdersNavigation(patient.id, 'Medication')}>
-                            Medications
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOrdersNavigation(patient.id, 'Imaging')}>
-                            Imaging
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOrdersNavigation(patient.id, 'Consult')}>
-                            Consults
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <td>{patient.nurseAssigned}</td>
+                    <td>
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0">
+                        <User className="h-4 w-4" />
+                        <span className="sr-only">Patient Details</span>
+                      </Button>
                     </td>
                   </tr>
                 ))}

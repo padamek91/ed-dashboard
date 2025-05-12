@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { User, Bell, ClipboardList, Folder, Calendar } from 'lucide-react';
 import RoleSwitcher from './RoleSwitcher';
-import { CriticalNotificationDropdown } from './alerts/CriticalNotificationDropdown';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -113,13 +112,9 @@ const DashboardLayout = ({ children, activeTab, role }: DashboardLayoutProps) =>
           </div>
           <div className="flex items-center gap-4">
             <RoleSwitcher />
-            {role === 'doctor' ? (
-              <CriticalNotificationDropdown />
-            ) : (
-              <Button variant="ghost" size="icon" className="text-muted-foreground">
-                <Bell size={20} />
-              </Button>
-            )}
+            <Button variant="ghost" size="icon" className="text-muted-foreground">
+              <Bell size={20} />
+            </Button>
             <div>
               <div className="font-medium">{user?.name}</div>
               <div className="text-xs text-muted-foreground capitalize">{user?.role}</div>
