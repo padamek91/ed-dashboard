@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@/contexts/AuthContext';
 import { patients } from '@/data/mockData';
 
 interface ResultsFiltersProps {
@@ -15,6 +17,8 @@ interface ResultsFiltersProps {
   setOrderTypeFilter: (type: string) => void;
   timeFilter: string;
   setTimeFilter: (time: string) => void;
+  myPatientsOnly: boolean;
+  setMyPatientsOnly: (value: boolean) => void;
 }
 
 const ResultsFilters = ({
@@ -25,35 +29,32 @@ const ResultsFilters = ({
   orderTypeFilter,
   setOrderTypeFilter,
   timeFilter,
-  setTimeFilter
+  setTimeFilter,
+  myPatientsOnly,
+  setMyPatientsOnly
 }: ResultsFiltersProps) => {
+  const { user } = useAuth();
+
   return (
     <Card className="border-0 shadow-none bg-transparent">
       <CardContent className="p-0">
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-grow">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search results..."
+              placeholder="Search patients..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8"
             />
           </div>
           
-          <Select value={selectedPatient} onValueChange={setSelectedPatient}>
-            <SelectTrigger className="w-full md:w-[200px]">
-              <SelectValue placeholder="All Patients" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Patients</SelectItem>
-              {patients.map(patient => (
-                <SelectItem key={patient.id} value={patient.mrn}>
-                  {patient.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center space-x-2">
+            <Switch 
+              id="my-patients"
+              checked={myPatientsOnly}
+              onCheckedChange={setMyPatientsOnly}
+            />
+            <Label htmlFor="my-patients">My Patients Only</Label>
+          </div>
           
           <Select value={orderTypeFilter} onValueChange={setOrderTypeFilter}>
             <SelectTrigger className="w-full md:w-[150px]">

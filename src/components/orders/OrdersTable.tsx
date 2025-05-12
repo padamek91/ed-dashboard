@@ -1,6 +1,7 @@
 
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
 import StatusBadge from './StatusBadge';
+import { formatDateTime } from '@/utils/orderUtils';
 
 interface Order {
   id: string;
@@ -46,7 +47,11 @@ const OrdersTable = ({
               {showPatient && <TableCell>{order.patient}</TableCell>}
               <TableCell>{order.type}</TableCell>
               <TableCell><StatusBadge status={order.status} /></TableCell>
-              {orders.some(o => o.timestamp) && <TableCell>{order.timestamp || ''}</TableCell>}
+              {orders.some(o => o.timestamp) && (
+                <TableCell>
+                  {order.timestamp ? formatDateTime(order.timestamp) : ''}
+                </TableCell>
+              )}
             </TableRow>
           ))
         ) : (

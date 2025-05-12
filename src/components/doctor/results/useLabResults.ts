@@ -1,22 +1,25 @@
 
 import { useMemo } from 'react';
 import { useOrders } from '@/contexts/OrdersContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { LabOrder } from '@/contexts/OrdersContext';
+import { patients } from '@/data/mockData';
 
 interface UseLabResultsParams {
-  selectedPatient: string;
   searchQuery: string;
   orderTypeFilter: string;
   timeFilter: string;
+  myPatientsOnly: boolean;
 }
 
 export const useLabResults = ({
-  selectedPatient,
   searchQuery,
   orderTypeFilter,
-  timeFilter
+  timeFilter,
+  myPatientsOnly
 }: UseLabResultsParams) => {
   const { labOrders } = useOrders();
+  const { user } = useAuth();
   
   // Get completed orders with results - memoized
   const completedOrders = useMemo(() => {
@@ -29,9 +32,12 @@ export const useLabResults = ({
       // Start with assuming the order matches our filters
       let matches = true;
       
-      // Filter by patient if selected
-      if (selectedPatient !== 'all' && order.mrn !== selectedPatient) {
-        matches = false;
+      // Filter by "my patients only" if selected
+      if (myPatientsOnly && user?.role === 'doctor') {
+        const patientData = patients.find(p => p.mrn === order.mrn);
+        if (!patientData || patientData.attendingPhysician !== user.name) {
+          matches = false;
+        }
       }
       
       // Filter by order type if selected
@@ -47,13 +53,10 @@ export const useLabResults = ({
       // Filter by search query
       if (searchQuery) {
         const lowerCaseQuery = searchQuery.toLowerCase();
-        const result = order.result?.toLowerCase() || '';
-        const type = order.type.toLowerCase();
         const patientName = order.patient.toLowerCase();
         
-        if (!result.includes(lowerCaseQuery) && 
-            !type.includes(lowerCaseQuery) && 
-            !patientName.includes(lowerCaseQuery)) {
+        // Only search patient names
+        if (!patientName.includes(lowerCaseQuery)) {
           matches = false;
         }
       }
@@ -82,7 +85,7 @@ export const useLabResults = ({
       
       return matches;
     });
-  }, [completedOrders, selectedPatient, orderTypeFilter, searchQuery, timeFilter]);
+  }, [completedOrders, orderTypeFilter, searchQuery, timeFilter, myPatientsOnly, user]);
 
   return {
     completedOrders,

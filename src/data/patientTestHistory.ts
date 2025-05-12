@@ -14,7 +14,7 @@ export type TestHistory = {
 export const patientTestHistory: Record<string, TestHistory[]> = {
   // Michael Johnson's test history (Dr. Smith's patient)
   '10001': [
-    // Very recent results (added for duplicate order testing)
+    // Very recent results (from last 24 hours)
     {
       testName: 'Complete Blood Count (CBC) with Differential',
       result: '10.8',
@@ -41,6 +41,52 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
       timestamp: '2025-05-12 00:45', // Very recent (today)
       patientId: '10001',
       abnormal: true
+    },
+    // NEW RECENT TESTS - Michael Johnson
+    {
+      testName: 'Comprehensive Metabolic Panel (CMP)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-11 22:10',
+      patientId: '10001',
+      abnormal: false
+    },
+    {
+      testName: 'Lipid Panel',
+      result: '195',
+      units: 'mg/dL',
+      referenceRange: '<200 mg/dL',
+      patientId: '10001',
+      timestamp: '2025-05-11 21:45',
+      abnormal: false
+    },
+    {
+      testName: 'C-Reactive Protein (CRP)',
+      result: '2.8',
+      units: 'mg/L',
+      referenceRange: '<3.0 mg/L',
+      patientId: '10001',
+      timestamp: '2025-05-11 20:30',
+      abnormal: false
+    },
+    {
+      testName: 'Coagulation Panel (PT, PTT, INR)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      patientId: '10001',
+      timestamp: '2025-05-11 19:15',
+      abnormal: false
+    },
+    {
+      testName: 'Urinalysis (UA), Automated',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      patientId: '10001',
+      timestamp: '2025-05-11 18:00',
+      abnormal: false
     },
     // Current result
     {
@@ -216,7 +262,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
   
   // Emily Rodriguez's test history (Dr. Smith's patient)
   '10002': [
-    // Very recent results (added for duplicate order testing)
+    // Very recent results (from last 24 hours)
     {
       testName: 'Complete Blood Count (CBC) with Differential',
       result: '12.1',
@@ -243,6 +289,52 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
       timestamp: '2025-05-12 02:15', // Very recent (today)
       patientId: '10002',
       abnormal: true
+    },
+    // NEW RECENT TESTS - Emily Rodriguez
+    {
+      testName: 'Basic Metabolic Panel (BMP)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-12 01:45',
+      patientId: '10002',
+      abnormal: false
+    },
+    {
+      testName: 'Liver Function Tests (LFTs)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-12 00:30',
+      patientId: '10002',
+      abnormal: false
+    },
+    {
+      testName: 'Coagulation Panel (PT, PTT, INR)',
+      result: 'PT: 12.5s, INR: 1.1',
+      units: 'Various',
+      referenceRange: 'PT: 11.0-13.5s, INR: 0.8-1.2',
+      timestamp: '2025-05-11 21:00',
+      patientId: '10002',
+      abnormal: false
+    },
+    {
+      testName: 'Glucose (Serum)',
+      result: '105',
+      units: 'mg/dL',
+      referenceRange: '70-100 mg/dL',
+      timestamp: '2025-05-11 20:15',
+      patientId: '10002',
+      abnormal: true
+    },
+    {
+      testName: 'C-Reactive Protein (CRP)',
+      result: '1.8',
+      units: 'mg/L',
+      referenceRange: '<3.0 mg/L',
+      timestamp: '2025-05-11 18:45',
+      patientId: '10002',
+      abnormal: false
     },
     // Current result
     {
@@ -388,7 +480,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
   
   // David Williams's test history (Dr. Smith's patient)
   '10003': [
-    // Very recent results (added for duplicate order testing)
+    // Very recent results (from last 24 hours)
     {
       testName: 'Comprehensive Metabolic Panel (CMP)',
       result: 'Multiple values',
@@ -413,6 +505,52 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
       units: 'Various',
       referenceRange: 'Various',
       timestamp: '2025-05-12 01:15', // Very recent (today)
+      patientId: '10003',
+      abnormal: true
+    },
+    // NEW RECENT TESTS - David Williams
+    {
+      testName: 'Complete Blood Count (CBC) with Differential',
+      result: '15.8',
+      units: 'x10^3/μL',
+      referenceRange: '4.5-11.0 x10^3/μL',
+      timestamp: '2025-05-12 02:00',
+      patientId: '10003',
+      abnormal: true
+    },
+    {
+      testName: 'Coagulation Panel (PT, PTT, INR)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-11 22:30',
+      patientId: '10003',
+      abnormal: false
+    },
+    {
+      testName: 'Basic Metabolic Panel (BMP)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-11 21:15',
+      patientId: '10003',
+      abnormal: false
+    },
+    {
+      testName: 'Lactate',
+      result: '2.8',
+      units: 'mmol/L',
+      referenceRange: '0.5-2.2 mmol/L',
+      timestamp: '2025-05-11 20:00',
+      patientId: '10003',
+      abnormal: true
+    },
+    {
+      testName: 'Sepsis Workup Panel (CBC, Lactate, Blood Cultures, Procalcitonin)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-11 18:45',
       patientId: '10003',
       abnormal: true
     },
@@ -558,4 +696,3 @@ export const findPreviousResult = (mrn: string, testName: string): TestHistory |
   // Return the second most recent (the previous result)
   return matchingTests[1] || null;
 };
-
