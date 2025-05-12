@@ -18,20 +18,33 @@ interface PatientSelectorProps {
   onPatientSelect: (patient: Patient | null) => void;
   selectedPatientId: string;
   onPatientIdChange: (id: string) => void;
+  myPatients?: Patient[];
 }
 
 const PatientSelector = ({ 
   selectedPatient, 
   onPatientSelect, 
   selectedPatientId, 
-  onPatientIdChange 
+  onPatientIdChange,
+  myPatients = []
 }: PatientSelectorProps) => {
   const [patientSearchQuery, setPatientSearchQuery] = useState<string>('');
   const [patientSearchResults, setPatientSearchResults] = useState<typeof patients>([]);
   const { user } = useAuth();
   
-  // Get patients assigned to the logged in doctor
-  const myPatients = patients.filter(p => p.attendingPhysician === user?.name);
+  // Get patients assigned to the logged in user if myPatients not provided
+  const assignedPatients = myPatients.length > 0 ? myPatients : 
+    user?.role === 'doctor' 
+      ? patients.filter(p => p.attendingPhysician === user?.name).map(p => ({
+          id: p.id,
+          name: p.name,
+          mrn: p.mrn
+        }))
+      : patients.filter(p => p.nurseAssigned === user?.name).map(p => ({
+          id: p.id,
+          name: p.name,
+          mrn: p.mrn
+        }));
   
   // Effect to filter patients based on search
   useEffect(() => {
@@ -48,7 +61,7 @@ const PatientSelector = ({
   
   // Effect to update selected patient when dropdown changes
   useEffect(() => {
-    if (selectedPatientId) {
+    if (selectedPatientId && (!selectedPatient || selectedPatientId !== selectedPatient?.id)) {
       const patient = patients.find(p => p.id === selectedPatientId);
       if (patient) {
         onPatientSelect({
@@ -56,11 +69,9 @@ const PatientSelector = ({
           name: patient.name,
           mrn: patient.mrn
         });
-        // Clear search when selecting from dropdown
-        setPatientSearchQuery('');
       }
     }
-  }, [selectedPatientId, onPatientSelect]);
+  }, [selectedPatientId, onPatientSelect, selectedPatient]);
 
   // Handle patient selection from search
   const handlePatientSelect = (patient: typeof patients[0]) => {
@@ -74,24 +85,38 @@ const PatientSelector = ({
   };
 
   return (
-    <>
-      <div className="flex items-center space-x-4 mb-4">
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center gap-4 w-full">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-1">My Patients</label>
-          <Select value={selectedPatientId} onValueChange={onPatientIdChange}>
+          <Select 
+            value={selectedPatientId} 
+            onValueChange={(value) => {
+              if (value !== selectedPatientId) {
+                onPatientIdChange(value);
+              }
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select patient" />
             </SelectTrigger>
             <SelectContent>
-              {myPatients.map(patient => (
-                <SelectItem key={patient.id} value={patient.id}>
-                  {patient.name} ({patient.mrn})
+              {assignedPatients.length > 0 ? (
+                assignedPatients.map(patient => (
+                  <SelectItem key={patient.id} value={patient.id}>
+                    {patient.name} ({patient.mrn})
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="no-patients" disabled>
+                  No assigned patients found
                 </SelectItem>
-              ))}
+              )}
             </SelectContent>
           </Select>
         </div>
-        <div className="flex-[2] relative">
+        
+        <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-1">Patient Search</label>
           <div className="relative">
             <Input
@@ -104,6 +129,7 @@ const PatientSelector = ({
               variant="ghost" 
               size="icon" 
               className="absolute right-0 top-0 h-full"
+              type="button"
             >
               <Search className="h-4 w-4" />
             </Button>
@@ -126,7 +152,7 @@ const PatientSelector = ({
       </div>
       
       {selectedPatient && (
-        <div className="bg-blue-50 p-3 rounded-md mb-4 flex justify-between items-center">
+        <div className="bg-blue-50 p-3 rounded-md flex justify-between items-center">
           <div>
             <span className="text-sm text-gray-500">Patient Selected:</span>
             <h3 className="font-medium">{selectedPatient.name} ({selectedPatient.mrn})</h3>
@@ -138,12 +164,13 @@ const PatientSelector = ({
               onPatientSelect(null);
               onPatientIdChange('');
             }}
+            type="button"
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

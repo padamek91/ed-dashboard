@@ -1,11 +1,24 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, AlertTriangle } from 'lucide-react';
 import SearchableDropdown from '../SearchableDropdown';
 import { labTests } from '@/data/ordersMockData';
 import { useToast } from '@/hooks/use-toast';
 import { generateOrderId, getCurrentTimestamp } from '@/utils/orderUtils';
+import { patientTestHistory } from '@/data/patientTestHistory';
+import { useNavigate } from 'react-router-dom';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Input } from '@/components/ui/input';
 
 interface LabOrderEntryProps {
   selectedPatient: { id: string; name: string; mrn: string } | null;
@@ -17,7 +30,12 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
   const [testSearchQuery, setTestSearchQuery] = useState<string>('');
   const [testSearchResults, setTestSearchResults] = useState<string[]>([]);
+  const [duplicateTestAlert, setDuplicateTestAlert] = useState<boolean>(false);
+  const [duplicateTests, setDuplicateTests] = useState<string[]>([]);
+  const [mostRecentDuplicateId, setMostRecentDuplicateId] = useState<string>('');
+  const [retestReason, setRetestReason] = useState<string>('');
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   // Effect to filter tests based on search
   useEffect(() => {
@@ -44,6 +62,54 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
     setSelectedTests(selectedTests.filter(t => t !== test));
   };
 
+  // Check for duplicate tests ordered within the last 24 hours
+  const checkForDuplicates = () => {
+    if (!selectedPatient) return [];
+    
+    const patientMrn = selectedPatient.mrn;
+    const patientHistory = patientTestHistory[patientMrn] || [];
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
+    
+    // Special tests with longer duplication window (e.g., 72 hours for blood cultures)
+    const specialTests = ['Blood Culture', 'Hemoglobin A1C'];
+    const specialTestWindow = new Date(now.getTime() - 72 * 60 * 60 * 1000); // 72 hours ago
+    
+    const duplicates: string[] = [];
+    let mostRecent: string = '';
+    let mostRecentTimestamp: Date = new Date(0);
+    
+    selectedTests.forEach(test => {
+      const matchingTests = patientHistory.filter(historyItem => {
+        const testDate = new Date(historyItem.timestamp);
+        const timeWindow = specialTests.includes(historyItem.testName) ? specialTestWindow : oneDayAgo;
+        
+        return historyItem.testName === test && testDate > timeWindow;
+      });
+      
+      if (matchingTests.length > 0) {
+        duplicates.push(test);
+        
+        // Find the most recently resulted test among all duplicates
+        matchingTests.forEach(match => {
+          const matchDate = new Date(match.timestamp);
+          if (matchDate > mostRecentTimestamp) {
+            mostRecentTimestamp = matchDate;
+            mostRecent = `lab-${matchDate.getTime()}`; // Generate a predictable ID format
+          }
+        });
+      }
+    });
+    
+    if (duplicates.length > 0) {
+      setDuplicateTests(duplicates);
+      setMostRecentDuplicateId(mostRecent);
+      return duplicates;
+    }
+    
+    return [];
+  };
+
   // Handle order submission
   const handleSubmitOrders = () => {
     if (!selectedPatient || selectedTests.length === 0) {
@@ -55,26 +121,45 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
       return;
     }
 
+    const duplicates = checkForDuplicates();
+    if (duplicates.length > 0) {
+      setDuplicateTestAlert(true);
+      return;
+    }
+
+    submitOrders();
+  };
+  
+  // Function to actually submit the orders
+  const submitOrders = () => {
     const newOrders = selectedTests.map(test => ({
       id: generateOrderId(),
-      patient: selectedPatient.name,
-      mrn: selectedPatient.mrn,
+      patient: selectedPatient!.name,
+      mrn: selectedPatient!.mrn,
       type: test,
       status: 'order placed',
-      timestamp: getCurrentTimestamp()
+      timestamp: getCurrentTimestamp(),
+      retestReason: retestReason || undefined
     }));
 
     toast({
       title: "Orders Submitted",
-      description: `${selectedTests.length} order(s) placed for ${selectedPatient.name}`,
+      description: `${selectedTests.length} order(s) placed for ${selectedPatient!.name}`,
     });
 
     // Send new orders to parent component
     onOrderSubmit(newOrders);
 
-    // Clear selected tests after submission
+    // Clear selected tests and reason after submission
     setSelectedTests([]);
+    setRetestReason('');
     setActiveLabTab('status');
+  };
+  
+  // Handle viewing the most recent result
+  const handleGoToResult = () => {
+    setDuplicateTestAlert(false);
+    navigate(`/doctor-dashboard/results?id=${mostRecentDuplicateId}`);
   };
 
   return (
@@ -119,6 +204,56 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
       >
         Submit Order(s)
       </Button>
+      
+      {/* Duplicate Test Alert Dialog */}
+      <AlertDialog open={duplicateTestAlert} onOpenChange={setDuplicateTestAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              Duplicate Test Warning
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {duplicateTests.length > 1 
+                ? `The following tests have recently been performed for this patient: ${duplicateTests.join(', ')}`
+                : `${duplicateTests[0]} has recently been performed for this patient.`
+              }
+              <br /><br />
+              Would you like to order these tests again or view the most recent result?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          {/* Only show reason input when "Order Anyway" is about to be selected */}
+          <div className="mb-4">
+            <label htmlFor="retest-reason" className="block text-sm font-medium text-gray-700 mb-1">
+              Reason for retesting (required)
+            </label>
+            <Input
+              id="retest-reason"
+              value={retestReason}
+              onChange={(e) => setRetestReason(e.target.value)}
+              placeholder="Enter reason for reordering this test"
+              className="w-full"
+            />
+          </div>
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDuplicateTestAlert(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleGoToResult}>
+              Go to Result
+            </AlertDialogAction>
+            <AlertDialogAction 
+              onClick={submitOrders}
+              disabled={!retestReason.trim()}
+              className={!retestReason.trim() ? "opacity-50 cursor-not-allowed" : ""}
+            >
+              Order Anyway
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
