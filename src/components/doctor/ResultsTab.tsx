@@ -127,6 +127,60 @@ const ResultsTab = () => {
     (ack: any) => ack.role === 'doctor'
   );
 
+  // Format lab result for better display
+  const formatLabResult = (resultText: string) => {
+    // Try to identify patterns in the result text
+    const lines = resultText.split('\n');
+    
+    // Attempt to extract test items with values, units, and reference ranges
+    const parsedResults = lines.map(line => {
+      // Skip empty lines
+      if (!line.trim()) return null;
+      
+      // Try to parse lines with common patterns
+      const matches = line.match(/^([\w\s\-\(\)]+):\s*([\d\.<>]+)\s*([\w\/\%\[\]]+)?\s*(?:\(([\w\s\-<>\/\d\.]+)\))?/);
+      
+      if (matches) {
+        return {
+          test: matches[1]?.trim() || '',
+          value: matches[2]?.trim() || '',
+          units: matches[3]?.trim() || '',
+          referenceRange: matches[4]?.trim() || ''
+        };
+      }
+      
+      // For lines that don't match the pattern
+      return { text: line.trim() };
+    }).filter(Boolean);
+    
+    return parsedResults;
+  };
+
+  // Determine if a value is abnormal based on reference range
+  const isValueAbnormal = (value: string | number, refRange: string) => {
+    if (!refRange) return false;
+    
+    const numValue = typeof value === 'number' ? value : parseFloat(value.replace(/[<>]/g, ''));
+    if (isNaN(numValue)) return false;
+    
+    // Check different reference range formats
+    if (refRange.includes('-')) {
+      // Range format: "3.5-5.0"
+      const [min, max] = refRange.split('-').map(v => parseFloat(v));
+      return numValue < min || numValue > max;
+    } else if (refRange.includes('<')) {
+      // Format: "< 200"
+      const max = parseFloat(refRange.replace(/[<\s]/g, ''));
+      return numValue >= max;
+    } else if (refRange.includes('>')) {
+      // Format: "> 60"
+      const min = parseFloat(refRange.replace(/[>\s]/g, ''));
+      return numValue <= min;
+    }
+    
+    return false;
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Results Review</h2>
@@ -167,7 +221,46 @@ const ResultsTab = () => {
               )}
               
               <h3 className="font-medium mb-2">Result:</h3>
-              <pre className="whitespace-pre-wrap font-mono text-sm bg-white p-4 rounded border">{selectedResult.result}</pre>
+              <div className="bg-white p-4 rounded border">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="text-left py-2 px-2 w-1/3">Test</th>
+                      <th className="text-left py-2 px-2 w-1/4">Value</th>
+                      <th className="text-left py-2 px-2 w-1/6">Units</th>
+                      <th className="text-left py-2 px-2 w-1/4">Reference Range</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {formatLabResult(selectedResult.result).map((item: any, index: number) => {
+                      if (item.text) {
+                        // For lines that didn't match our pattern
+                        return (
+                          <tr key={index}>
+                            <td className="py-2 px-2" colSpan={4}>{item.text}</td>
+                          </tr>
+                        );
+                      }
+                      
+                      const isAbnormal = isValueAbnormal(item.value, item.referenceRange);
+                      const valueClass = selectedResult.critical 
+                        ? "text-red-600 font-bold" 
+                        : isAbnormal 
+                        ? "text-amber-600 font-semibold" 
+                        : "";
+                      
+                      return (
+                        <tr key={index} className="border-b">
+                          <td className="py-2 px-2 font-medium">{item.test}</td>
+                          <td className={`py-2 px-2 ${valueClass}`}>{item.value}</td>
+                          <td className="py-2 px-2">{item.units}</td>
+                          <td className="py-2 px-2">{item.referenceRange}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
               
               <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                 <div>
@@ -326,17 +419,52 @@ const ResultsTab = () => {
                               </div>
                             </div>
                             
-                            <div className={`mt-4 p-3 bg-gray-50 rounded-md ${
+                            <div className={`mt-4 p-3 rounded-md ${
                               result.critical 
-                                ? 'text-red-600' 
+                                ? 'bg-red-50' 
                                 : result.abnormal 
-                                ? 'text-amber-700' 
-                                : ''
+                                ? 'bg-amber-50' 
+                                : 'bg-gray-50'
                             }`}>
-                              <div className="font-medium">Result Preview:</div>
-                              <div className="whitespace-pre-wrap line-clamp-2 text-sm">
-                                {result.result}
-                              </div>
+                              <div className="font-medium mb-2">Result Preview:</div>
+                              <table className="w-full text-sm">
+                                <tbody>
+                                  {formatLabResult(result.result)
+                                    .slice(0, 3) // Show only first 3 results in preview
+                                    .map((item: any, index: number) => {
+                                      if (item.text) {
+                                        return (
+                                          <tr key={index}>
+                                            <td colSpan={4} className="py-1">{item.text}</td>
+                                          </tr>
+                                        );
+                                      }
+                                      
+                                      const isAbnormal = isValueAbnormal(item.value, item.referenceRange);
+                                      const valueClass = result.critical 
+                                        ? "text-red-600 font-bold" 
+                                        : isAbnormal 
+                                        ? "text-amber-600 font-semibold" 
+                                        : "";
+                                      
+                                      return (
+                                        <tr key={index}>
+                                          <td className="py-1 pr-4 w-1/3 font-medium">{item.test}</td>
+                                          <td className={`py-1 pr-4 w-1/4 ${valueClass}`}>{item.value}</td>
+                                          <td className="py-1 pr-4 w-1/6">{item.units}</td>
+                                          <td className="py-1 w-1/4">{item.referenceRange}</td>
+                                        </tr>
+                                      );
+                                  })}
+                                  {formatLabResult(result.result).length > 3 && (
+                                    <tr>
+                                      <td colSpan={4} className="py-1 text-center text-gray-500 italic">
+                                        {formatLabResult(result.result).length - 3} more items...
+                                      </td>
+                                    </tr>
+                                  )}
+                                </tbody>
+                              </table>
                             </div>
                           </CardContent>
                         </Card>
@@ -388,11 +516,22 @@ const ResultsTab = () => {
                               </div>
                             </div>
                             
-                            <div className="mt-4 p-3 bg-red-50 rounded-md text-red-600">
-                              <div className="font-medium">Result Preview:</div>
-                              <div className="whitespace-pre-wrap line-clamp-2 text-sm">
-                                {result.result}
-                              </div>
+                            <div className="mt-4 p-3 bg-red-50 rounded-md">
+                              <div className="font-medium mb-2">Critical Values:</div>
+                              <table className="w-full text-sm">
+                                <tbody>
+                                  {formatLabResult(result.result)
+                                    .filter((item: any) => !item.text && isValueAbnormal(item.value, item.referenceRange))
+                                    .map((item: any, index: number) => (
+                                      <tr key={index}>
+                                        <td className="py-1 pr-4 w-1/3 font-medium">{item.test}</td>
+                                        <td className="py-1 pr-4 w-1/4 text-red-600 font-bold">{item.value}</td>
+                                        <td className="py-1 pr-4 w-1/6">{item.units}</td>
+                                        <td className="py-1 w-1/4">{item.referenceRange}</td>
+                                      </tr>
+                                    ))}
+                                </tbody>
+                              </table>
                             </div>
                           </CardContent>
                         </Card>

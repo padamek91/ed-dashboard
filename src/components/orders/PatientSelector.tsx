@@ -61,7 +61,7 @@ const PatientSelector = ({
   
   // Effect to update selected patient when dropdown changes
   useEffect(() => {
-    if (selectedPatientId && selectedPatientId !== selectedPatient?.id) {
+    if (selectedPatientId && (!selectedPatient || selectedPatientId !== selectedPatient?.id)) {
       const patient = patients.find(p => p.id === selectedPatientId);
       if (patient) {
         onPatientSelect({
@@ -129,6 +129,7 @@ const PatientSelector = ({
               variant="ghost" 
               size="icon" 
               className="absolute right-0 top-0 h-full"
+              type="button"
             >
               <Search className="h-4 w-4" />
             </Button>
@@ -163,6 +164,7 @@ const PatientSelector = ({
               onPatientSelect(null);
               onPatientIdChange('');
             }}
+            type="button"
           >
             <X className="h-4 w-4" />
           </Button>
