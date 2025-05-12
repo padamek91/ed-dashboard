@@ -25,12 +25,14 @@ const LabResults = ({ orders, selectedPatient }: LabResultsProps) => {
   };
   
   return (
-    <OrdersTable 
-      orders={filteredOrders} 
-      showPatient={true}
-      emptyMessage="No results found"
-      onRowClick={handleRowClick}
-    />
+    <div className="overflow-x-auto">
+      <OrdersTable 
+        orders={filteredOrders} 
+        showPatient={true}
+        emptyMessage="No results found"
+        onRowClick={handleRowClick}
+      />
+    </div>
   );
 };
 

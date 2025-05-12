@@ -50,7 +50,7 @@ export const useLabResults = ({
         }
       }
       
-      // Filter by search query
+      // Filter by search query - search patient names not test names
       if (searchQuery) {
         const lowerCaseQuery = searchQuery.toLowerCase();
         const patientName = order.patient.toLowerCase();
