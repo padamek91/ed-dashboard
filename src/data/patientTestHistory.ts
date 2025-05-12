@@ -1,3 +1,4 @@
+
 import { TestHistory } from './testHistoryTypes';
 import { availableLabTests } from './testHistoryTypes';
 
@@ -790,3 +791,32 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
       result: 'Multiple values',
       units: 'Various',
       referenceRange: 'Various',
+      timestamp: '2025-05-11 21:15', // Yesterday 
+      patientId: '10006',
+      abnormal: false
+    }
+  ]
+};
+
+// Function to find previous test results for a patient
+export const findPreviousResult = (mrn: string, testName: string): TestHistory | null => {
+  // Normalize MRN by removing 'MRN' prefix if present
+  const normalizedMrn = mrn.replace(/^MRN/i, '');
+  
+  const patientHistory = patientTestHistory[normalizedMrn];
+  if (!patientHistory) return null;
+  
+  // Get all tests with matching name
+  const matchingTests = patientHistory.filter(test => test.testName === testName);
+  
+  // If less than 2 tests, there's no previous result
+  if (matchingTests.length < 2) return null;
+  
+  // Sort by timestamp descending
+  matchingTests.sort((a, b) => 
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+  
+  // Return the second most recent (the previous result)
+  return matchingTests[1] || null;
+};
