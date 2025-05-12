@@ -4,7 +4,7 @@ import { LabOrder } from '@/contexts/OrdersContext';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatDateTime } from '@/utils/orderUtils';
-import { findPreviousResult } from '@/data/patientTestHistory';
+import { findPreviousResult } from '@/data/testHistoryTypes';
 
 interface ResultDetailProps {
   result: LabOrder;
