@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
-import { labTests } from '@/data/ordersMockData';
+import { availableLabTests } from '@/data/testHistoryTypes';
 import { patientTestHistory } from '@/data/patientTestHistory';
+import { hasRecentOrder } from '@/data/testHistoryTypes';
 
 export interface SelectedPatient {
   id: string;
@@ -21,7 +22,7 @@ export const useTestSelection = (selectedPatient: SelectedPatient | null) => {
   // Effect to filter tests based on search
   useEffect(() => {
     if (testSearchQuery) {
-      const filtered = labTests.filter(test => 
+      const filtered = availableLabTests.filter(test => 
         test.toLowerCase().includes(testSearchQuery.toLowerCase())
       );
       setTestSearchResults(filtered);
@@ -48,40 +49,40 @@ export const useTestSelection = (selectedPatient: SelectedPatient | null) => {
     if (!selectedPatient) return [];
     
     const patientMrn = selectedPatient.mrn;
-    const patientHistory = patientTestHistory[patientMrn] || [];
-    const now = new Date();
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
     
-    // Special tests with longer duplication window (e.g., 72 hours for blood cultures)
+    // Special tests with longer duplication window (e.g., 72 hours)
     const specialTests = ['Blood Culture (x2)', 'Hemoglobin A1c'];
-    const specialTestWindow = new Date(now.getTime() - 72 * 60 * 60 * 1000); // 72 hours ago
     
     const duplicates: string[] = [];
     let mostRecent: string = '';
     let mostRecentTimestamp: Date = new Date(0);
     
     selectedTests.forEach(test => {
-      const matchingTests = patientHistory.filter(historyItem => {
-        const testDate = new Date(historyItem.timestamp);
-        const isSpecialTest = specialTests.some(specialTest => 
-          test.includes(specialTest)
-        );
-        const timeWindow = isSpecialTest ? specialTestWindow : oneDayAgo;
-        
-        return historyItem.testName === test && testDate > timeWindow;
-      });
+      const isSpecialTest = specialTests.some(specialTest => 
+        test.includes(specialTest)
+      );
+      const hoursWindow = isSpecialTest ? 72 : 24;
       
-      if (matchingTests.length > 0) {
+      if (hasRecentOrder(patientMrn, patientTestHistory, test, hoursWindow)) {
         duplicates.push(test);
         
-        // Find the most recently resulted test among all duplicates
-        matchingTests.forEach(match => {
-          const matchDate = new Date(match.timestamp);
-          if (matchDate > mostRecentTimestamp) {
-            mostRecentTimestamp = matchDate;
-            mostRecent = `lab-${matchDate.getTime()}`; // Generate a predictable ID format
+        // Find the most recent timestamp for this test to generate an ID
+        const patientTests = patientTestHistory[patientMrn] || [];
+        const matchingTests = patientTests.filter(t => t.testName === test);
+        
+        if (matchingTests.length > 0) {
+          matchingTests.sort((a, b) => 
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          );
+          
+          const latestTest = matchingTests[0];
+          const testDate = new Date(latestTest.timestamp);
+          
+          if (testDate > mostRecentTimestamp) {
+            mostRecentTimestamp = testDate;
+            mostRecent = `lab-${testDate.getTime()}`; // Generate a predictable ID format
           }
-        });
+        }
       }
     });
     

@@ -13,14 +13,15 @@ const SelectedTestsList = ({ selectedTests, onRemoveTest }: SelectedTestsListPro
   return (
     <div className="mt-4">
       <h4 className="text-sm font-medium mb-2">Selected Tests:</h4>
-      <div className="space-y-2">
+      <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
         {selectedTests.map((test, index) => (
           <div key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
-            <span>{test}</span>
+            <span className="whitespace-nowrap mr-2">{test}</span>
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={() => onRemoveTest(test)}
+              className="shrink-0"
             >
               <X className="h-4 w-4" />
             </Button>

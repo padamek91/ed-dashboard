@@ -46,8 +46,10 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
       return;
     }
 
+    // Check for duplicate tests before submitting
     const duplicates = checkForDuplicates();
     if (duplicates.length > 0) {
+      console.log("Found duplicate tests:", duplicates);
       setDuplicateTestAlert(true);
       return;
     }
@@ -67,6 +69,8 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
       retestReason: retestReason || undefined
     }));
 
+    console.log("Submitting orders:", newOrders);
+    
     toast({
       title: "Orders Submitted",
       description: `${selectedTests.length} order(s) placed for ${selectedPatient!.name}`,

@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { availableLabTests } from '@/data/testHistoryTypes';
 
 interface SearchableDropdownProps {
   placeholder: string;
@@ -24,6 +25,8 @@ const SearchableDropdown = ({
   commonItems = [],
   popoverTitle = "Common Items"
 }: SearchableDropdownProps) => {
+  // Default to using available lab tests if no common items provided
+  const itemsToShow = commonItems && commonItems.length > 0 ? commonItems : availableLabTests.slice(0, 15);
   
   return (
     <div>
@@ -48,11 +51,11 @@ const SearchableDropdown = ({
             <div className="space-y-4">
               <h4 className="font-medium">{popoverTitle}</h4>
               <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
-                {commonItems.slice(0, 10).map((item, i) => (
+                {itemsToShow.map((item, i) => (
                   <Button 
                     key={i} 
                     variant="outline" 
-                    className="justify-start h-auto py-2 px-3 text-left"
+                    className="justify-start h-auto py-2 px-3 text-left whitespace-normal break-words"
                     onClick={() => onItemSelect(item)}
                   >
                     {item}
@@ -68,7 +71,7 @@ const SearchableDropdown = ({
             {searchResults.map((item, index) => (
               <div 
                 key={index}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer whitespace-normal break-words"
                 onClick={() => onItemSelect(item)}
               >
                 {item}

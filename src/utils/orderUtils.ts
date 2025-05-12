@@ -9,8 +9,45 @@ export const getPatientName = (patientId: string) => {
 
 // Function to format date
 export const formatDateTime = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleString();
+  if (!dateString) return 'N/A';
+  
+  try {
+    // Check if dateString is in ISO format or custom format
+    let date;
+    if (dateString.includes('T') || dateString.includes('Z')) {
+      // ISO format (with T or Z)
+      date = new Date(dateString);
+    } else {
+      // Custom format like '2025-05-12 12:34'
+      const [datePart, timePart] = dateString.split(' ');
+      const [year, month, day] = datePart.split('-');
+      
+      if (timePart && timePart.includes(':')) {
+        const [hours, minutes] = timePart.split(':');
+        date = new Date(
+          parseInt(year), 
+          parseInt(month) - 1, // month is 0-indexed in JS Date
+          parseInt(day),
+          parseInt(hours),
+          parseInt(minutes)
+        );
+      } else {
+        // If no time part, default to midnight
+        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      }
+    }
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date:', dateString);
+      return 'Invalid date';
+    }
+    
+    return date.toLocaleString();
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Date error';
+  }
 };
 
 // Filter orders based on selected patient
