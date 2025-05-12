@@ -22,6 +22,22 @@ const ResultDetail = ({
   onAcknowledge,
   isAcknowledged
 }: ResultDetailProps) => {
+  const { user } = useAuth();
+  
+  // Check if the result exists
+  if (!result) {
+    return (
+      <Card>
+        <CardContent>
+          <div className="py-8 text-center">
+            <p className="text-muted-foreground">Result not found</p>
+            <Button onClick={onBack} className="mt-4">Back to Results</Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between">
@@ -68,7 +84,7 @@ const ResultDetail = ({
                 </tr>
               </thead>
               <tbody>
-                {formatLabResult(result.result).map((item: any, index: number) => {
+                {result.result && formatLabResult(result.result).map((item: any, index: number) => {
                   if (item.text) {
                     // For lines that didn't match our pattern
                     return (
@@ -78,10 +94,10 @@ const ResultDetail = ({
                     );
                   }
                   
-                  const isAbnormal = isValueAbnormal(item.value, item.referenceRange);
+                  const isAbnormalValue = isValueAbnormal(item.value, item.referenceRange);
                   const valueClass = result.critical 
                     ? "text-red-600 font-bold" 
-                    : isAbnormal 
+                    : isAbnormalValue 
                     ? "text-amber-600 font-semibold" 
                     : "";
                   

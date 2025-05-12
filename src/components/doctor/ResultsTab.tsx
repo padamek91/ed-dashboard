@@ -43,10 +43,8 @@ const ResultsTab = () => {
   // Effect to find the specific result when ID is provided
   useEffect(() => {
     if (resultId) {
-      const result = filteredResults.find(order => order.id === resultId);
-      if (result) {
-        setSelectedResult(result);
-      }
+      const foundResult = filteredResults.find(order => order.id === resultId);
+      setSelectedResult(foundResult || null);
     } else {
       setSelectedResult(null);
     }
