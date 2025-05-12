@@ -11,14 +11,15 @@ export const useResultFormatting = () => {
       if (!line.trim()) return null;
       
       // More complete regex to match various lab result formats
-      const matches = line.match(/^([\w\s\-\(\)]+):\s*([\d\.<>]+)\s*([\w\/\%\[\]]+)?\s*(?:\((Reference Range:\s*)?([\w\s\-<>\/\d\.]+)\))?/);
+      // This regex properly captures reference ranges
+      const matches = line.match(/^([\w\s\-\(\)]+):\s*([\d\.<>]+)\s*([\w\/\%\[\]]+)?\s*(?:\((Reference Range:|Reference:|Range:|)([\w\s\-<>\/\d\.]+)\))?/i);
       
       if (matches) {
         return {
           test: matches[1]?.trim() || '',
           value: matches[2]?.trim() || '',
           units: matches[3]?.trim() || '',
-          referenceRange: matches[5]?.trim() || matches[4]?.trim() || ''
+          referenceRange: matches[5]?.trim() || ''
         };
       }
       

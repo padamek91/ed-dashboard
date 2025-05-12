@@ -104,21 +104,21 @@ const PatientList = () => {
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full table-fixed">
+            <table className="w-full">
               <thead className="bg-slate-50 border-b">
                 <tr>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[14%]">Patient Name</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[10%]">Age / DOB</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[5%]">Sex</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">MRN</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[15%]">Chief Complaint</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">Arrival</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">Time in ED</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[6%]">Acuity</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[6%]">Location</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">MD</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">RN</th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[4%]">Act</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[80px]">Act</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[180px]">Patient Name</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[120px]">Age / DOB</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[60px]">Sex</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[100px]">MRN</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[200px]">Chief Complaint</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[80px]">Arrival</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[100px]">Time in ED</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[80px]">Acuity</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[80px]">Location</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[120px]">MD</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[120px]">RN</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -130,23 +130,6 @@ const PatientList = () => {
                       hover:bg-blue-50 transition-colors duration-150
                     `}
                   >
-                    <td className="px-3 py-4 font-medium truncate text-base">{patient.name}</td>
-                    <td className="px-3 py-4 truncate text-sm">{patient.age} / {patient.dateOfBirth}</td>
-                    <td className="px-3 py-4 text-sm">{patient.sex}</td>
-                    <td className="px-3 py-4 text-sm">{patient.mrn}</td>
-                    <td className="px-3 py-4 truncate text-sm">{patient.chiefComplaint}</td>
-                    <td className="px-3 py-4 text-sm">{formatTime(patient.arrivalTime)}</td>
-                    <td className="px-3 py-4 text-sm">{patient.timeInED}</td>
-                    <td className="px-3 py-4 text-sm">{renderAcuityLevel(patient.triageLevel)}</td>
-                    <td className="px-3 py-4 text-sm">{patient.location}</td>
-                    <td className="px-3 py-4 truncate text-sm">
-                      {patient.attendingPhysician === user?.name ? (
-                        <span className="font-medium">{patient.attendingPhysician}</span>
-                      ) : (
-                        patient.attendingPhysician
-                      )}
-                    </td>
-                    <td className="px-3 py-4 truncate text-sm">{patient.nurseAssigned}</td>
                     <td className="px-3 py-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -170,6 +153,23 @@ const PatientList = () => {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>
+                    <td className="px-3 py-4 font-medium text-base whitespace-nowrap">{patient.name}</td>
+                    <td className="px-3 py-4 text-sm whitespace-nowrap">{patient.age} / {patient.dateOfBirth}</td>
+                    <td className="px-3 py-4 text-sm">{patient.sex}</td>
+                    <td className="px-3 py-4 text-sm">{patient.mrn}</td>
+                    <td className="px-3 py-4 text-sm">{patient.chiefComplaint}</td>
+                    <td className="px-3 py-4 text-sm whitespace-nowrap">{formatTime(patient.arrivalTime)}</td>
+                    <td className="px-3 py-4 text-sm whitespace-nowrap">{patient.timeInED}</td>
+                    <td className="px-3 py-4 text-sm">{renderAcuityLevel(patient.triageLevel)}</td>
+                    <td className="px-3 py-4 text-sm">{patient.location}</td>
+                    <td className="px-3 py-4 text-sm">
+                      {patient.attendingPhysician === user?.name ? (
+                        <span className="font-medium">{patient.attendingPhysician}</span>
+                      ) : (
+                        patient.attendingPhysician
+                      )}
+                    </td>
+                    <td className="px-3 py-4 text-sm">{patient.nurseAssigned}</td>
                   </tr>
                 ))}
                 
