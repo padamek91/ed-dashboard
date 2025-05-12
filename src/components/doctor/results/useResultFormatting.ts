@@ -10,15 +10,15 @@ export const useResultFormatting = () => {
       // Skip empty lines
       if (!line.trim()) return null;
       
-      // Try to parse lines with common patterns
-      const matches = line.match(/^([\w\s\-\(\)]+):\s*([\d\.<>]+)\s*([\w\/\%\[\]]+)?\s*(?:\(([\w\s\-<>\/\d\.]+)\))?/);
+      // More complete regex to match various lab result formats
+      const matches = line.match(/^([\w\s\-\(\)]+):\s*([\d\.<>]+)\s*([\w\/\%\[\]]+)?\s*(?:\((Reference Range:\s*)?([\w\s\-<>\/\d\.]+)\))?/);
       
       if (matches) {
         return {
           test: matches[1]?.trim() || '',
           value: matches[2]?.trim() || '',
           units: matches[3]?.trim() || '',
-          referenceRange: matches[4]?.trim() || ''
+          referenceRange: matches[5]?.trim() || matches[4]?.trim() || ''
         };
       }
       

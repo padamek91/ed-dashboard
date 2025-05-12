@@ -107,18 +107,18 @@ const PatientList = () => {
             <table className="w-full table-fixed">
               <thead className="bg-slate-50 border-b">
                 <tr>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[14%]">Patient Name</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[10%]">Age / DOB</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[5%]">Sex</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">MRN</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[15%]">Chief Complaint</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">Arrival</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">Time in ED</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[6%]">Acuity</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[6%]">Location</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">MD</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">RN</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[4%]">Act</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[14%]">Patient Name</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[10%]">Age / DOB</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[5%]">Sex</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">MRN</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[15%]">Chief Complaint</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">Arrival</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">Time in ED</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[6%]">Acuity</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[6%]">Location</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">MD</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">RN</th>
+                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[4%]">Act</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -127,27 +127,27 @@ const PatientList = () => {
                     key={patient.id}
                     className={`
                       ${isPatientAssignedToMe(patient) ? 'bg-blue-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                      hover:bg-blue-50 transition-colors duration-150 text-sm
+                      hover:bg-blue-50 transition-colors duration-150
                     `}
                   >
-                    <td className="px-2 py-2 font-medium truncate">{patient.name}</td>
-                    <td className="px-2 py-2 truncate">{patient.age} / {patient.dateOfBirth}</td>
-                    <td className="px-2 py-2">{patient.sex}</td>
-                    <td className="px-2 py-2">{patient.mrn}</td>
-                    <td className="px-2 py-2 truncate">{patient.chiefComplaint}</td>
-                    <td className="px-2 py-2">{formatTime(patient.arrivalTime)}</td>
-                    <td className="px-2 py-2">{patient.timeInED}</td>
-                    <td className="px-2 py-2">{renderAcuityLevel(patient.triageLevel)}</td>
-                    <td className="px-2 py-2">{patient.location}</td>
-                    <td className="px-2 py-2 truncate">
+                    <td className="px-3 py-4 font-medium truncate text-base">{patient.name}</td>
+                    <td className="px-3 py-4 truncate text-sm">{patient.age} / {patient.dateOfBirth}</td>
+                    <td className="px-3 py-4 text-sm">{patient.sex}</td>
+                    <td className="px-3 py-4 text-sm">{patient.mrn}</td>
+                    <td className="px-3 py-4 truncate text-sm">{patient.chiefComplaint}</td>
+                    <td className="px-3 py-4 text-sm">{formatTime(patient.arrivalTime)}</td>
+                    <td className="px-3 py-4 text-sm">{patient.timeInED}</td>
+                    <td className="px-3 py-4 text-sm">{renderAcuityLevel(patient.triageLevel)}</td>
+                    <td className="px-3 py-4 text-sm">{patient.location}</td>
+                    <td className="px-3 py-4 truncate text-sm">
                       {patient.attendingPhysician === user?.name ? (
                         <span className="font-medium">{patient.attendingPhysician}</span>
                       ) : (
                         patient.attendingPhysician
                       )}
                     </td>
-                    <td className="px-2 py-2 truncate">{patient.nurseAssigned}</td>
-                    <td className="px-2 py-2">
+                    <td className="px-3 py-4 truncate text-sm">{patient.nurseAssigned}</td>
+                    <td className="px-3 py-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button size="sm" variant="outline" className="h-7 px-2 py-0">
@@ -175,7 +175,7 @@ const PatientList = () => {
                 
                 {filteredPatients.length === 0 && (
                   <tr>
-                    <td colSpan={12} className="text-center py-6 text-muted-foreground">
+                    <td colSpan={12} className="text-center py-8 text-muted-foreground">
                       No patients found matching your criteria
                     </td>
                   </tr>
