@@ -72,7 +72,7 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
     
     // Special tests with longer duplication window (e.g., 72 hours for blood cultures)
-    const specialTests = ['Blood Culture', 'Hemoglobin A1C'];
+    const specialTests = ['Blood Culture (x2)', 'Hemoglobin A1c'];
     const specialTestWindow = new Date(now.getTime() - 72 * 60 * 60 * 1000); // 72 hours ago
     
     const duplicates: string[] = [];
@@ -82,7 +82,10 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
     selectedTests.forEach(test => {
       const matchingTests = patientHistory.filter(historyItem => {
         const testDate = new Date(historyItem.timestamp);
-        const timeWindow = specialTests.includes(historyItem.testName) ? specialTestWindow : oneDayAgo;
+        const isSpecialTest = specialTests.some(specialTest => 
+          historyItem.testName.includes(specialTest)
+        );
+        const timeWindow = isSpecialTest ? specialTestWindow : oneDayAgo;
         
         return historyItem.testName === test && testDate > timeWindow;
       });

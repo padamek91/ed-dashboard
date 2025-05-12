@@ -12,8 +12,36 @@ export type TestHistory = {
 
 // Collection of test histories per patient
 export const patientTestHistory: Record<string, TestHistory[]> = {
-  // Michael Johnson's test history
+  // Michael Johnson's test history (Dr. Smith's patient)
   '10001': [
+    // Very recent results (added for duplicate order testing)
+    {
+      testName: 'Complete Blood Count (CBC) with Differential',
+      result: '10.8',
+      units: 'x10^3/μL',
+      referenceRange: '4.5-11.0 x10^3/μL',
+      timestamp: '2025-05-12 01:30', // Very recent (today)
+      patientId: '10001',
+      abnormal: false
+    },
+    {
+      testName: 'Basic Metabolic Panel (BMP)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-12 01:30', // Very recent (today)
+      patientId: '10001',
+      abnormal: false
+    },
+    {
+      testName: 'Cardiac Enzymes Panel (Troponin, CK-MB, etc.)',
+      result: '0.9',
+      units: 'ng/mL',
+      referenceRange: '<0.04 ng/mL',
+      timestamp: '2025-05-12 00:45', // Very recent (today)
+      patientId: '10001',
+      abnormal: true
+    },
     // Current result
     {
       testName: 'Troponin I',
@@ -76,23 +104,23 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     },
     // Current result
     {
-      testName: 'Hgb',
-      result: '13.8',
-      units: 'g/dL',
-      referenceRange: '13.5-17.5 g/dL',
+      testName: 'Hemoglobin A1c',
+      result: '5.9',
+      units: '%',
+      referenceRange: '4.0-5.6 %',
       patientId: '10001',
-      timestamp: '2025-05-01 10:15',
-      abnormal: false
+      timestamp: '2025-05-11 16:20', // Very recent (yesterday)
+      abnormal: true
     },
     // Previous result
     {
-      testName: 'Hgb',
-      result: '14.2',
-      units: 'g/dL',
-      referenceRange: '13.5-17.5 g/dL',
+      testName: 'Hemoglobin A1c',
+      result: '5.7',
+      units: '%',
+      referenceRange: '4.0-5.6 %',
       patientId: '10001',
-      timestamp: '2025-04-15 14:30',
-      abnormal: false
+      timestamp: '2025-02-15 10:30',
+      abnormal: true
     },
     // Current result
     {
@@ -176,7 +204,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     },
     // Current result
     {
-      testName: 'D-Dimer',
+      testName: 'D-dimer',
       result: '0.3',
       units: 'mg/L FEU',
       referenceRange: '<0.5 mg/L FEU',
@@ -184,11 +212,38 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
       timestamp: '2025-05-04 11:45',
       abnormal: false
     },
-    // Previous result (no previous result for D-Dimer)
   ],
   
-  // Emily Rodriguez's test history
+  // Emily Rodriguez's test history (Dr. Smith's patient)
   '10002': [
+    // Very recent results (added for duplicate order testing)
+    {
+      testName: 'Complete Blood Count (CBC) with Differential',
+      result: '12.1',
+      units: 'x10^3/μL',
+      referenceRange: '4.5-11.0 x10^3/μL',
+      timestamp: '2025-05-11 22:15', // Very recent (yesterday)
+      patientId: '10002',
+      abnormal: true
+    },
+    {
+      testName: 'Urinalysis (UA), Automated',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-11 23:00', // Very recent (yesterday)
+      patientId: '10002',
+      abnormal: false
+    },
+    {
+      testName: 'Lipid Panel',
+      result: '210',
+      units: 'mg/dL',
+      referenceRange: '<200 mg/dL',
+      timestamp: '2025-05-12 02:15', // Very recent (today)
+      patientId: '10002',
+      abnormal: true
+    },
     // Current result
     {
       testName: 'WBC',
@@ -311,7 +366,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     },
     // Add blood culture test as a special test with longer duplication window
     {
-      testName: 'Blood Culture',
+      testName: 'Blood Culture (x2)',
       result: 'No Growth',
       units: '',
       referenceRange: 'No Growth',
@@ -321,7 +376,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     },
     // Previous blood culture
     {
-      testName: 'Blood Culture',
+      testName: 'Blood Culture (x2)',
       result: 'No Growth',
       units: '',
       referenceRange: 'No Growth',
@@ -331,8 +386,36 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     }
   ],
   
-  // David Williams's test history
+  // David Williams's test history (Dr. Smith's patient)
   '10003': [
+    // Very recent results (added for duplicate order testing)
+    {
+      testName: 'Comprehensive Metabolic Panel (CMP)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-11 23:45', // Very recent (yesterday)
+      patientId: '10003',
+      abnormal: false
+    },
+    {
+      testName: 'C-Reactive Protein (CRP)',
+      result: '14.2',
+      units: 'mg/L',
+      referenceRange: '<3.0 mg/L',
+      timestamp: '2025-05-12 00:30', // Very recent (today)
+      patientId: '10003',
+      abnormal: true
+    },
+    {
+      testName: 'Inflammatory Markers Panel (CRP, ESR, Procalcitonin)',
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-12 01:15', // Very recent (today)
+      patientId: '10003',
+      abnormal: true
+    },
     // Current result
     {
       testName: 'pH',
@@ -435,7 +518,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     },
     // Add Hemoglobin A1C as another special test with longer duplication window
     {
-      testName: 'Hemoglobin A1C',
+      testName: 'Hemoglobin A1c',
       result: '7.2',
       units: '%',
       referenceRange: '4.0-5.6 %',
@@ -445,7 +528,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     },
     // Previous hemoglobin A1C (from 3 months ago, which would be normal for this test)
     {
-      testName: 'Hemoglobin A1C',
+      testName: 'Hemoglobin A1c',
       result: '7.0',
       units: '%',
       referenceRange: '4.0-5.6 %',
@@ -475,3 +558,4 @@ export const findPreviousResult = (mrn: string, testName: string): TestHistory |
   // Return the second most recent (the previous result)
   return matchingTests[1] || null;
 };
+
