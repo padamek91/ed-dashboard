@@ -2,6 +2,7 @@
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import CriticalResultItem from './CriticalResultItem';
 import { LabOrder } from '@/contexts/OrdersContext';
+import { memo } from 'react';
 
 interface CriticalResultListProps {
   filteredResults: LabOrder[];
@@ -10,7 +11,7 @@ interface CriticalResultListProps {
   onViewDetails: (resultId: string) => void;
 }
 
-const CriticalResultList = ({
+const CriticalResultList = memo(({
   filteredResults,
   formatLabResult,
   isValueAbnormal,
@@ -44,6 +45,8 @@ const CriticalResultList = ({
       </CardContent>
     </Card>
   );
-};
+});
+
+CriticalResultList.displayName = 'CriticalResultList';
 
 export default CriticalResultList;

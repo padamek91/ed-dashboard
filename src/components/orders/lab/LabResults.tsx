@@ -2,17 +2,19 @@
 import { useNavigate } from 'react-router-dom';
 import OrdersTable from '../OrdersTable';
 import { filterOrdersByPatient } from '@/utils/orderUtils';
+import { LabOrder } from '@/contexts/OrdersContext';
+import { memo } from 'react';
 
 interface LabResultsProps {
-  orders: any[];
+  orders: LabOrder[];
   selectedPatient: { id: string; name: string; mrn: string } | null;
 }
 
-const LabResults = ({ orders, selectedPatient }: LabResultsProps) => {
+const LabResults = memo(({ orders, selectedPatient }: LabResultsProps) => {
   const navigate = useNavigate();
   
   // Filter only completed orders with results
-  const completedOrders = orders.filter(o => o.status.includes('resulted'));
+  const completedOrders = orders.filter(o => o.status === 'resulted');
   
   // Filter by patient if selected
   const filteredOrders = selectedPatient 
@@ -32,6 +34,8 @@ const LabResults = ({ orders, selectedPatient }: LabResultsProps) => {
       onRowClick={handleRowClick}
     />
   );
-};
+});
+
+LabResults.displayName = 'LabResults';
 
 export default LabResults;
