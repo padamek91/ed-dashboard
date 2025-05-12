@@ -4,7 +4,6 @@ import { LabOrder } from '@/contexts/OrdersContext';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatDateTime } from '@/utils/orderUtils';
-import { findPreviousResult } from '@/data/testHistoryTypes';
 
 interface ResultDetailProps {
   result: LabOrder;
@@ -62,11 +61,10 @@ const ResultDetail = ({
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="text-left py-2 px-2 w-1/4">Test</th>
-                  <th className="text-left py-2 px-2 w-[15%]">Result</th>
-                  <th className="text-left py-2 px-2 w-[10%]">Units</th>
+                  <th className="text-left py-2 px-2 w-1/3">Test</th>
+                  <th className="text-left py-2 px-2 w-1/4">Value</th>
+                  <th className="text-left py-2 px-2 w-1/6">Units</th>
                   <th className="text-left py-2 px-2 w-1/4">Reference Range</th>
-                  <th className="text-left py-2 px-2 w-1/4">Previous Result</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,7 +73,7 @@ const ResultDetail = ({
                     // For lines that didn't match our pattern
                     return (
                       <tr key={index}>
-                        <td className="py-2 px-2" colSpan={5}>{item.text}</td>
+                        <td className="py-2 px-2" colSpan={4}>{item.text}</td>
                       </tr>
                     );
                   }
@@ -87,25 +85,12 @@ const ResultDetail = ({
                     ? "text-amber-600 font-semibold" 
                     : "";
                   
-                  // Get previous test result if available
-                  const previousResult = findPreviousResult(result.mrn, item.test);
-                  
                   return (
                     <tr key={index} className="border-b">
                       <td className="py-2 px-2 font-medium">{item.test}</td>
                       <td className={`py-2 px-2 ${valueClass}`}>{item.value}</td>
                       <td className="py-2 px-2">{item.units}</td>
                       <td className="py-2 px-2">{item.referenceRange}</td>
-                      <td className="py-2 px-2">
-                        {previousResult ? (
-                          <span className={previousResult.abnormal ? "text-amber-600 font-semibold" : ""}>
-                            {previousResult.result} {previousResult.units && previousResult.units}
-                            <div className="text-xs text-gray-500">{formatDateTime(previousResult.timestamp)}</div>
-                          </span>
-                        ) : (
-                          <span className="text-gray-400">No previous results</span>
-                        )}
-                      </td>
                     </tr>
                   );
                 })}

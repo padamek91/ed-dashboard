@@ -25,19 +25,19 @@ const ResultsTab = () => {
   const resultId = queryParams.get('id');
   
   // State
+  const [selectedPatient, setSelectedPatient] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [orderTypeFilter, setOrderTypeFilter] = useState('all');
   const [timeFilter, setTimeFilter] = useState('any');
   const [selectedResult, setSelectedResult] = useState<any>(null);
-  const [myPatientsOnly, setMyPatientsOnly] = useState(false);
 
   // Custom hooks
   const { formatLabResult, isValueAbnormal } = useResultFormatting();
   const { filteredResults } = useLabResults({
+    selectedPatient,
     searchQuery,
     orderTypeFilter,
-    timeFilter,
-    myPatientsOnly
+    timeFilter
   });
 
   // Effect to find the specific result when ID is provided
@@ -97,14 +97,12 @@ const ResultsTab = () => {
           <ResultsFilters 
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            selectedPatient=""
-            setSelectedPatient={() => {}}  // Not used anymore, but keeping for compatibility
+            selectedPatient={selectedPatient}
+            setSelectedPatient={setSelectedPatient}
             orderTypeFilter={orderTypeFilter}
             setOrderTypeFilter={setOrderTypeFilter}
             timeFilter={timeFilter}
             setTimeFilter={setTimeFilter}
-            myPatientsOnly={myPatientsOnly}
-            setMyPatientsOnly={setMyPatientsOnly}
           />
 
           <Tabs defaultValue="all-results" className="w-full">

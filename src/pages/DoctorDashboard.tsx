@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -28,6 +29,7 @@ const DoctorDashboardContent = () => {
     case '/doctor-dashboard/orders':
       content = <OrdersTab initialTab={orderTab || ''} patientId={patientId || ''} />;
       activeTab = 'orders';
+      setActiveMainTab(orderTab || '');
       break;
     case '/doctor-dashboard/results':
       content = <ResultsTab />;
@@ -52,7 +54,7 @@ const DoctorDashboardContent = () => {
       console.log('Selected patient ID:', patientId);
     }
     
-    // If we have an order tab, log it and update state
+    // If we have an order tab, log it
     if (orderTab) {
       console.log('Selected order tab:', orderTab);
       setActiveMainTab(orderTab);

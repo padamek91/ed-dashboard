@@ -1,43 +1,36 @@
 
 import { useMemo } from 'react';
 import { useOrders } from '@/contexts/OrdersContext';
-import { useAuth } from '@/contexts/AuthContext';
 import { LabOrder } from '@/contexts/OrdersContext';
-import { patients } from '@/data/mockData';
 
 interface UseLabResultsParams {
+  selectedPatient: string;
   searchQuery: string;
   orderTypeFilter: string;
   timeFilter: string;
-  myPatientsOnly: boolean;
 }
 
 export const useLabResults = ({
+  selectedPatient,
   searchQuery,
   orderTypeFilter,
-  timeFilter,
-  myPatientsOnly
+  timeFilter
 }: UseLabResultsParams) => {
   const { labOrders } = useOrders();
-  const { user } = useAuth();
   
-  // Get completed orders with results - memoized
+  // Get completed orders with results
   const completedOrders = useMemo(() => {
     return labOrders.filter(order => order.status === 'resulted' && order.result);
   }, [labOrders]);
   
-  // Filter results based on selections - memoized to prevent recalculation
+  // Filter results based on selections
   const filteredResults = useMemo(() => {
     return completedOrders.filter(order => {
-      // Start with assuming the order matches our filters
       let matches = true;
       
-      // Filter by "my patients only" if selected
-      if (myPatientsOnly && user?.role === 'doctor') {
-        const patientData = patients.find(p => p.mrn === order.mrn);
-        if (!patientData || patientData.attendingPhysician !== user.name) {
-          matches = false;
-        }
+      // Filter by patient if selected
+      if (selectedPatient !== 'all' && order.mrn !== selectedPatient) {
+        matches = false;
       }
       
       // Filter by order type if selected
@@ -50,13 +43,16 @@ export const useLabResults = ({
         }
       }
       
-      // Filter by search query - search patient names not test names
+      // Filter by search query
       if (searchQuery) {
         const lowerCaseQuery = searchQuery.toLowerCase();
+        const result = order.result?.toLowerCase() || '';
+        const type = order.type.toLowerCase();
         const patientName = order.patient.toLowerCase();
         
-        // Only search patient names
-        if (!patientName.includes(lowerCaseQuery)) {
+        if (!result.includes(lowerCaseQuery) && 
+            !type.includes(lowerCaseQuery) && 
+            !patientName.includes(lowerCaseQuery)) {
           matches = false;
         }
       }
@@ -85,7 +81,7 @@ export const useLabResults = ({
       
       return matches;
     });
-  }, [completedOrders, orderTypeFilter, searchQuery, timeFilter, myPatientsOnly, user]);
+  }, [completedOrders, selectedPatient, orderTypeFilter, searchQuery, timeFilter]);
 
   return {
     completedOrders,

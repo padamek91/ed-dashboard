@@ -1,6 +1,7 @@
 
 import { formatDateTime } from '@/utils/orderUtils';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { LabOrder } from '@/contexts/OrdersContext';
 
 interface ResultItemProps {
@@ -16,23 +17,14 @@ const ResultItem = ({
   isValueAbnormal,
   onViewDetails 
 }: ResultItemProps) => {
-  // Make entire card clickable
-  const handleClick = () => {
-    onViewDetails(result.id);
-  };
-
   return (
-    <Card 
-      key={result.id} 
-      className={`border-l-4 cursor-pointer hover:shadow-md transition-shadow ${
-        result.critical 
-          ? 'border-l-red-500' 
-          : result.abnormal 
-          ? 'border-l-amber-500' 
-          : 'border-l-gray-200'
-      }`}
-      onClick={handleClick}
-    >
+    <Card key={result.id} className={`border-l-4 ${
+      result.critical 
+        ? 'border-l-red-500' 
+        : result.abnormal 
+        ? 'border-l-amber-500' 
+        : 'border-l-gray-200'
+    }`}>
       <CardContent className="p-4">
         <div className="flex flex-col md:flex-row justify-between">
           <div>
@@ -56,6 +48,63 @@ const ResultItem = ({
               Completed: {formatDateTime(result.timestamp)}
             </div>
           </div>
+          <div className="mt-3 md:mt-0 md:text-right">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => onViewDetails(result.id)}
+            >
+              View Details
+            </Button>
+          </div>
+        </div>
+        
+        <div className={`mt-4 p-3 rounded-md ${
+          result.critical 
+            ? 'bg-red-50' 
+            : result.abnormal 
+            ? 'bg-amber-50' 
+            : 'bg-gray-50'
+        }`}>
+          <div className="font-medium mb-2">Result Preview:</div>
+          <table className="w-full text-sm">
+            <tbody>
+              {formatLabResult(result.result)
+                .slice(0, 3) // Show only first 3 results in preview
+                .map((item: any, index: number) => {
+                  if (item.text) {
+                    return (
+                      <tr key={index}>
+                        <td colSpan={4} className="py-1">{item.text}</td>
+                      </tr>
+                    );
+                  }
+                  
+                  const isAbnormal = isValueAbnormal(item.value, item.referenceRange);
+                  const valueClass = result.critical 
+                    ? "text-red-600 font-bold" 
+                    : isAbnormal 
+                    ? "text-amber-600 font-semibold" 
+                    : "";
+                  
+                  return (
+                    <tr key={index}>
+                      <td className="py-1 pr-4 w-1/3 font-medium">{item.test}</td>
+                      <td className={`py-1 pr-4 w-1/4 ${valueClass}`}>{item.value}</td>
+                      <td className="py-1 pr-4 w-1/6">{item.units}</td>
+                      <td className="py-1 w-1/4">{item.referenceRange}</td>
+                    </tr>
+                  );
+              })}
+              {formatLabResult(result.result).length > 3 && (
+                <tr>
+                  <td colSpan={4} className="py-1 text-center text-gray-500 italic">
+                    {formatLabResult(result.result).length - 3} more items...
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </CardContent>
     </Card>

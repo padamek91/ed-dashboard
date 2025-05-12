@@ -1,12 +1,11 @@
 
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 import SearchableDropdown from '../SearchableDropdown';
-import SelectedTestsList from './SelectedTestsList';
-import DuplicateTestAlert from './DuplicateTestAlert';
-import { useTestSelection } from './useTestSelection';
+import { labTests } from '@/data/ordersMockData';
 import { useToast } from '@/hooks/use-toast';
-import { generateOrderId, getCurrentTimestamp, normalizeMrn } from '@/utils/orderUtils';
+import { generateOrderId, getCurrentTimestamp } from '@/utils/orderUtils';
 
 interface LabOrderEntryProps {
   selectedPatient: { id: string; name: string; mrn: string } | null;
@@ -15,25 +14,35 @@ interface LabOrderEntryProps {
 }
 
 const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabOrderEntryProps) => {
-  const navigate = useNavigate();
+  const [selectedTests, setSelectedTests] = useState<string[]>([]);
+  const [testSearchQuery, setTestSearchQuery] = useState<string>('');
+  const [testSearchResults, setTestSearchResults] = useState<string[]>([]);
   const { toast } = useToast();
   
-  const {
-    selectedTests,
-    testSearchQuery,
-    testSearchResults,
-    duplicateTestAlert,
-    duplicateTests,
-    mostRecentDuplicateId,
-    retestReason,
-    setTestSearchQuery,
-    setDuplicateTestAlert,
-    setRetestReason,
-    handleTestSelect,
-    handleRemoveTest,
-    checkForDuplicates,
-    resetTestSelections
-  } = useTestSelection(selectedPatient);
+  // Effect to filter tests based on search
+  useEffect(() => {
+    if (testSearchQuery) {
+      const filtered = labTests.filter(test => 
+        test.toLowerCase().includes(testSearchQuery.toLowerCase())
+      );
+      setTestSearchResults(filtered);
+    } else {
+      setTestSearchResults([]);
+    }
+  }, [testSearchQuery]);
+
+  // Handle test selection
+  const handleTestSelect = (test: string) => {
+    if (!selectedTests.includes(test)) {
+      setSelectedTests([...selectedTests, test]);
+    }
+    setTestSearchQuery('');
+  };
+
+  // Handle test removal
+  const handleRemoveTest = (test: string) => {
+    setSelectedTests(selectedTests.filter(t => t !== test));
+  };
 
   // Handle order submission
   const handleSubmitOrders = () => {
@@ -46,51 +55,26 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
       return;
     }
 
-    console.log("Selected patient MRN:", selectedPatient.mrn, "Normalized:", normalizeMrn(selectedPatient.mrn));
-    console.log("Selected tests:", selectedTests);
-    
-    // Check for duplicate tests before submitting
-    const duplicates = checkForDuplicates();
-    if (duplicates.length > 0) {
-      console.log("Found duplicate tests:", duplicates);
-      setDuplicateTestAlert(true);
-      return;
-    }
-
-    submitOrders();
-  };
-  
-  // Function to actually submit the orders
-  const submitOrders = () => {
     const newOrders = selectedTests.map(test => ({
       id: generateOrderId(),
-      patient: selectedPatient!.name,
-      mrn: normalizeMrn(selectedPatient!.mrn),
+      patient: selectedPatient.name,
+      mrn: selectedPatient.mrn,
       type: test,
       status: 'order placed',
-      timestamp: getCurrentTimestamp(),
-      retestReason: retestReason || undefined
+      timestamp: getCurrentTimestamp()
     }));
 
-    console.log("Submitting orders:", newOrders);
-    
     toast({
       title: "Orders Submitted",
-      description: `${selectedTests.length} order(s) placed for ${selectedPatient!.name}`,
+      description: `${selectedTests.length} order(s) placed for ${selectedPatient.name}`,
     });
 
     // Send new orders to parent component
     onOrderSubmit(newOrders);
 
-    // Clear selections and navigate to status tab
-    resetTestSelections();
+    // Clear selected tests after submission
+    setSelectedTests([]);
     setActiveLabTab('status');
-  };
-  
-  // Handle viewing the most recent result
-  const handleGoToResult = () => {
-    setDuplicateTestAlert(false);
-    navigate(`/doctor-dashboard/results?id=${mostRecentDuplicateId}`);
   };
 
   return (
@@ -103,15 +87,30 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
           onSearchChange={setTestSearchQuery}
           searchResults={testSearchResults}
           onItemSelect={handleTestSelect}
-          commonItems={testSearchResults.length > 0 ? [] : undefined}
+          commonItems={labTests}
           popoverTitle="Common Lab Tests"
         />
       </div>
       
-      <SelectedTestsList 
-        selectedTests={selectedTests}
-        onRemoveTest={handleRemoveTest}
-      />
+      {selectedTests.length > 0 && (
+        <div className="mt-4">
+          <h4 className="text-sm font-medium mb-2">Selected Tests:</h4>
+          <div className="space-y-2">
+            {selectedTests.map((test, index) => (
+              <div key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                <span>{test}</span>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => handleRemoveTest(test)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       
       <Button 
         onClick={handleSubmitOrders} 
@@ -120,16 +119,6 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
       >
         Submit Order(s)
       </Button>
-      
-      <DuplicateTestAlert 
-        open={duplicateTestAlert}
-        setOpen={setDuplicateTestAlert}
-        duplicateTests={duplicateTests}
-        retestReason={retestReason}
-        setRetestReason={setRetestReason}
-        onGoToResult={handleGoToResult}
-        onSubmitAnyway={submitOrders}
-      />
     </div>
   );
 };
