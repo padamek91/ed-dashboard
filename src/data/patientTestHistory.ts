@@ -1,10 +1,10 @@
-
 import { TestHistory } from './testHistoryTypes';
 import { availableLabTests } from './testHistoryTypes';
 
-// Collection of test histories per patient
+// Collection of test histories per patient - Using ONLY numeric MRNs here
+// This is key for the duplicate order check to work properly
 export const patientTestHistory: Record<string, TestHistory[]> = {
-  // Michael Johnson's test history (Dr. Smith's patient)
+  // Michael Johnson's test history (Dr. Smith's patient) - MRN without prefix
   '10001': [
     // Recent results (within last 24 hours)
     {
@@ -145,7 +145,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     }
   ],
   
-  // Emily Rodriguez's test history (Dr. Smith's patient)
+  // Emily Rodriguez's test history (Dr. Smith's patient) - MRN without prefix
   '10002': [
     // Very recent results (from last 24 hours)
     {
@@ -285,7 +285,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     }
   ],
   
-  // David Williams's test history (Dr. Smith's patient)
+  // David Williams's test history (Dr. Smith's patient) - MRN without prefix
   '10003': [
     {
       testName: "Comprehensive Metabolic Panel (CMP)",
@@ -424,7 +424,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     }
   ],
   
-  // Sarah Thompson's test history (Dr. Jones's patient)
+  // Sarah Thompson's test history (Dr. Jones's patient) - MRN without prefix
   '10004': [
     {
       testName: "Complete Blood Count (CBC) with Differential",
@@ -512,8 +512,8 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
       result: '1.2',
       units: 'mg/L',
       referenceRange: '<3.0 mg/L',
-      timestamp: '2025-05-11 18:45', // Yesterday
       patientId: '10004',
+      timestamp: '2025-05-11 18:45', // Yesterday
       abnormal: false
     },
     {
@@ -563,7 +563,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     }
   ],
   
-  // James Wilson's test history (Dr. Johnson's patient)
+  // James Wilson's test history (Dr. Johnson's patient) - MRN without prefix
   '10005': [
     {
       testName: "Complete Blood Count (CBC) with Differential",
@@ -702,7 +702,7 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
     }
   ],
   
-  // Lisa Brown's test history (Dr. Johnson's patient)
+  // Lisa Brown's test history (Dr. Johnson's patient) - MRN without prefix
   '10006': [
     {
       testName: "Complete Blood Count (CBC) with Differential",
@@ -790,491 +790,3 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
       result: 'Multiple values',
       units: 'Various',
       referenceRange: 'Various',
-      timestamp: '2025-05-11 21:15', // Yesterday
-      patientId: '10006',
-      abnormal: false
-    },
-    {
-      testName: "C-Reactive Protein (CRP)",
-      result: '1.8',
-      units: 'mg/L',
-      referenceRange: '<3.0 mg/L',
-      timestamp: '2025-05-11 20:00', // Yesterday
-      patientId: '10006',
-      abnormal: false
-    },
-    {
-      testName: "Glucose (Serum)",
-      result: '145',
-      units: 'mg/dL',
-      referenceRange: '70-100 mg/dL',
-      timestamp: '2025-05-11 18:45', // Yesterday
-      patientId: '10006',
-      abnormal: true
-    },
-    {
-      testName: "Calcium (Total and Ionized)",
-      result: 'Total: 8.8 mg/dL',
-      units: 'mg/dL',
-      referenceRange: 'Total: 8.6-10.2 mg/dL',
-      timestamp: '2025-05-11 17:30', // Yesterday
-      patientId: '10006',
-      abnormal: false
-    },
-    {
-      testName: "Magnesium",
-      result: '1.9',
-      units: 'mg/dL',
-      referenceRange: '1.7-2.2 mg/dL',
-      timestamp: '2025-05-11 16:15', // Yesterday
-      patientId: '10006',
-      abnormal: false
-    },
-    {
-      testName: "Phosphate (PO4)",
-      result: '3.5',
-      units: 'mg/dL',
-      referenceRange: '2.5-4.5 mg/dL',
-      timestamp: '2025-05-11 15:00', // Yesterday
-      patientId: '10006',
-      abnormal: false
-    }
-  ],
-  
-  // Robert Miller's test history (Dr. Johnson's patient)
-  '10007': [
-    {
-      testName: "Complete Blood Count (CBC) with Differential",
-      result: '5.6',
-      units: 'x10^3/μL',
-      referenceRange: '4.5-11.0 x10^3/μL',
-      timestamp: '2025-05-12 03:15', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Basic Metabolic Panel (BMP)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 03:30', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Cardiac Enzymes Panel (Troponin, CK-MB, etc.)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 03:45', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Troponin I",
-      result: '0.01',
-      units: 'ng/mL',
-      referenceRange: '<0.04 ng/mL',
-      timestamp: '2025-05-12 04:00', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Electrolyte Panel",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 04:15', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Comprehensive Metabolic Panel (CMP)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 02:30', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "D-dimer",
-      result: '0.25',
-      units: 'mg/L FEU',
-      referenceRange: '<0.5 mg/L FEU',
-      timestamp: '2025-05-12 02:15', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Coagulation Panel (PT, PTT, INR)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 02:00', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Type and Screen / Crossmatch",
-      result: 'Type A+, No antibodies',
-      units: '',
-      referenceRange: 'N/A',
-      timestamp: '2025-05-12 01:45', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Urinalysis (UA), Automated",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 01:30', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Liver Function Tests (LFTs)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 01:15', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Lipid Panel",
-      result: '190',
-      units: 'mg/dL',
-      referenceRange: '<200 mg/dL',
-      timestamp: '2025-05-12 01:00', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Hemoglobin A1c",
-      result: '5.5',
-      units: '%',
-      referenceRange: '4.0-5.6 %',
-      timestamp: '2025-05-12 00:45', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "B-type Natriuretic Peptide (BNP)",
-      result: '85',
-      units: 'pg/mL',
-      referenceRange: '<100 pg/mL',
-      timestamp: '2025-05-12 00:30', // Today
-      patientId: '10007',
-      abnormal: false
-    },
-    {
-      testName: "Albumin",
-      result: '3.8',
-      units: 'g/dL',
-      referenceRange: '3.4-5.4 g/dL',
-      timestamp: '2025-05-12 00:15', // Today
-      patientId: '10007',
-      abnormal: false
-    }
-  ],
-  
-  // Jennifer Lee's test history (Dr. Miller's patient)
-  '10008': [
-    {
-      testName: "Complete Blood Count (CBC) with Differential",
-      result: '3.9',
-      units: 'x10^3/μL',
-      referenceRange: '4.5-11.0 x10^3/μL',
-      timestamp: '2025-05-12 04:15', // Today
-      patientId: '10008',
-      abnormal: true
-    },
-    {
-      testName: "Basic Metabolic Panel (BMP)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 04:30', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Comprehensive Metabolic Panel (CMP)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 04:45', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Iron Studies Panel",
-      result: 'Multiple values including Ferritin: 15 ng/mL',
-      units: 'Various',
-      referenceRange: 'Ferritin: 20-200 ng/mL',
-      timestamp: '2025-05-12 05:00', // Today
-      patientId: '10008',
-      abnormal: true
-    },
-    {
-      testName: "Vitamin B12 and Folate",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 05:15', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Liver Function Tests (LFTs)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 04:00', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Thyroid Panel (TSH, Free T4 ± T3)",
-      result: 'TSH: 2.6 mIU/L',
-      units: 'Various',
-      referenceRange: 'TSH: 0.4-4.0 mIU/L',
-      timestamp: '2025-05-12 03:45', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Urinalysis (UA), Automated",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 03:30', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Lipid Panel",
-      result: '185',
-      units: 'mg/dL',
-      referenceRange: '<200 mg/dL',
-      timestamp: '2025-05-12 03:15', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "C-Reactive Protein (CRP)",
-      result: '1.5',
-      units: 'mg/L',
-      referenceRange: '<3.0 mg/L',
-      timestamp: '2025-05-12 03:00', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Electrolyte Panel",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 02:45', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Hemoglobin A1c",
-      result: '5.3',
-      units: '%',
-      referenceRange: '4.0-5.6 %',
-      timestamp: '2025-05-12 02:30', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Magnesium",
-      result: '1.8',
-      units: 'mg/dL',
-      referenceRange: '1.7-2.2 mg/dL',
-      timestamp: '2025-05-12 02:15', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "HCG (Qualitative and Quantitative)",
-      result: 'Negative',
-      units: '',
-      referenceRange: 'Negative',
-      timestamp: '2025-05-12 02:00', // Today
-      patientId: '10008',
-      abnormal: false
-    },
-    {
-      testName: "Calcium (Total and Ionized)",
-      result: 'Total: 9.0 mg/dL',
-      units: 'mg/dL',
-      referenceRange: 'Total: 8.6-10.2 mg/dL',
-      timestamp: '2025-05-12 01:45', // Today
-      patientId: '10008',
-      abnormal: false
-    }
-  ],
-  
-  // Daniel Garcia's test history (Dr. Miller's patient)
-  '10009': [
-    {
-      testName: "Complete Blood Count (CBC) with Differential",
-      result: '11.0',
-      units: 'x10^3/μL',
-      referenceRange: '4.5-11.0 x10^3/μL',
-      timestamp: '2025-05-12 01:30', // Today
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Basic Metabolic Panel (BMP)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 01:45', // Today
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Comprehensive Metabolic Panel (CMP)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 02:00', // Today
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Urinalysis (UA), Automated",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 02:15', // Today
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Urine Culture",
-      result: 'No Growth',
-      units: '',
-      referenceRange: 'No Growth',
-      timestamp: '2025-05-12 02:30', // Today
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Liver Function Tests (LFTs)",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 01:15', // Today
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Lipid Panel",
-      result: '260',
-      units: 'mg/dL',
-      referenceRange: '<200 mg/dL',
-      timestamp: '2025-05-12 01:00', // Today
-      patientId: '10009',
-      abnormal: true
-    },
-    {
-      testName: "Electrolyte Panel",
-      result: 'Multiple values',
-      units: 'Various',
-      referenceRange: 'Various',
-      timestamp: '2025-05-12 00:45', // Today
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Hemoglobin A1c",
-      result: '8.2',
-      units: '%',
-      referenceRange: '4.0-5.6 %',
-      timestamp: '2025-05-12 00:30', // Today
-      patientId: '10009',
-      abnormal: true
-    },
-    {
-      testName: "C-Reactive Protein (CRP)",
-      result: '2.2',
-      units: 'mg/L',
-      referenceRange: '<3.0 mg/L',
-      timestamp: '2025-05-12 00:15', // Today
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Glucose (Serum)",
-      result: '165',
-      units: 'mg/dL',
-      referenceRange: '70-100 mg/dL',
-      timestamp: '2025-05-12 00:00', // Today
-      patientId: '10009',
-      abnormal: true
-    },
-    {
-      testName: "Calcium (Total and Ionized)",
-      result: 'Total: 9.5 mg/dL',
-      units: 'mg/dL',
-      referenceRange: 'Total: 8.6-10.2 mg/dL',
-      timestamp: '2025-05-11 23:45', // Yesterday
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Magnesium",
-      result: '2.0',
-      units: 'mg/dL',
-      referenceRange: '1.7-2.2 mg/dL',
-      timestamp: '2025-05-11 23:30', // Yesterday
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Phosphate (PO4)",
-      result: '3.2',
-      units: 'mg/dL',
-      referenceRange: '2.5-4.5 mg/dL',
-      timestamp: '2025-05-11 23:15', // Yesterday
-      patientId: '10009',
-      abnormal: false
-    },
-    {
-      testName: "Albumin",
-      result: '4.0',
-      units: 'g/dL',
-      referenceRange: '3.4-5.4 g/dL',
-      timestamp: '2025-05-11 23:00', // Yesterday
-      patientId: '10009',
-      abnormal: false
-    }
-  ]
-};
-
-// Function to find previous test results for a patient
-export const findPreviousResult = (mrn: string, testName: string): TestHistory | null => {
-  const patientHistory = patientTestHistory[mrn];
-  if (!patientHistory) return null;
-  
-  // Get all tests with matching name
-  const matchingTests = patientHistory.filter(test => test.testName === testName);
-  
-  // If less than 2 tests, there's no previous result
-  if (matchingTests.length < 2) return null;
-  
-  // Sort by timestamp descending
-  matchingTests.sort((a, b) => 
-    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-  );
-  
-  // Return the second most recent (the previous result)
-  return matchingTests[1] || null;
-};
