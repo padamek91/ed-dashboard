@@ -1,24 +1,24 @@
 
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-// Placeholder data for trending chart
-const mockData = [
-  { date: 'Jan 1', value: 4.2 },
-  { date: 'Jan 15', value: 4.3 },
-  { date: 'Feb 1', value: 4.5 },
-  { date: 'Feb 15', value: 4.1 },
-  { date: 'Mar 1', value: 4.2 },
-];
+import { useMemo } from 'react';
 
 const TrendingResults = () => {
+  // Use useMemo to prevent recreation of this data on each render
+  const mockData = useMemo(() => [
+    { date: 'Jan 1', value: 4.2 },
+    { date: 'Jan 15', value: 4.3 },
+    { date: 'Feb 1', value: 4.5 },
+    { date: 'Feb 15', value: 4.1 },
+    { date: 'Mar 1', value: 4.2 },
+  ], []);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Trending Results</CardTitle>
       </CardHeader>
       <CardContent>
-        {/* Display placeholder chart if data is available, otherwise show message */}
         <div className="w-full h-64">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart

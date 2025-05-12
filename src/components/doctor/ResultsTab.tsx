@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useOrders } from '@/contexts/OrdersContext';
@@ -40,8 +40,8 @@ const ResultsTab = () => {
     timeFilter
   });
 
-  // Effect to find the specific result when ID is provided
-  useEffect(() => {
+  // Effect to find the specific result when ID is provided - using useCallback to prevent recreation on each render
+  const findResult = useCallback(() => {
     if (resultId) {
       const foundResult = filteredResults.find(order => order.id === resultId);
       setSelectedResult(foundResult || null);
@@ -50,27 +50,32 @@ const ResultsTab = () => {
     }
   }, [resultId, filteredResults]);
 
-  // Function to view detailed result
-  const viewDetailedResult = (resultId: string) => {
+  // Apply the findResult callback in a useEffect
+  useEffect(() => {
+    findResult();
+  }, [findResult]);
+
+  // Function to view detailed result - using useCallback to prevent recreation on each render
+  const viewDetailedResult = useCallback((resultId: string) => {
     // Navigate to the main results tab with the specific result ID
     navigate(`/doctor-dashboard/results?id=${resultId}`);
-  };
+  }, [navigate]);
 
-  // Clear the selected result and return to the list view
-  const handleBackToList = () => {
+  // Clear the selected result and return to the list view - using useCallback
+  const handleBackToList = useCallback(() => {
     navigate('/doctor-dashboard/results');
-  };
+  }, [navigate]);
 
-  // Handle acknowledging the critical result
-  const handleAcknowledgeResult = () => {
+  // Handle acknowledging the critical result - using useCallback
+  const handleAcknowledgeResult = useCallback(() => {
     if (selectedResult && user) {
       const timestamp = new Date().toLocaleString();
       const comment = `Result acknowledged by ${user.name} at ${timestamp}`;
       acknowledgeLabResult(selectedResult.id, comment);
     }
-  };
+  }, [selectedResult, user, acknowledgeLabResult]);
   
-  // Check if this result has already been acknowledged
+  // Check if this result has already been acknowledged - memoize to prevent recalculation
   const isAcknowledged = selectedResult?.acknowledgements?.some(
     (ack: any) => ack.role === 'doctor'
   );

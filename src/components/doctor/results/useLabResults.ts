@@ -18,12 +18,12 @@ export const useLabResults = ({
 }: UseLabResultsParams) => {
   const { labOrders } = useOrders();
   
-  // Get completed orders with results
+  // Get completed orders with results - memoized to prevent unnecessary recalculations
   const completedOrders = useMemo(() => {
     return labOrders.filter(order => order.status === 'resulted' && order.result);
   }, [labOrders]);
   
-  // Filter results based on selections
+  // Filter results based on selections - memoized to prevent unnecessary recalculations
   const filteredResults = useMemo(() => {
     return completedOrders.filter(order => {
       let matches = true;
