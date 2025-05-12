@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PatientSelector from '../PatientSelector';
@@ -8,12 +8,23 @@ import LabOrderStatus from './LabOrderStatus';
 import LabResults from './LabResults';
 import { useOrders } from '@/contexts/OrdersContext';
 
-const LabOrders = () => {
+interface LabOrdersProps {
+  patientId?: string;
+}
+
+const LabOrders = ({ patientId }: LabOrdersProps) => {
   const { labOrders, addLabOrders } = useOrders();
-  const [selectedPatientId, setSelectedPatientId] = useState<string>('');
+  const [selectedPatientId, setSelectedPatientId] = useState<string>(patientId || '');
   const [selectedPatient, setSelectedPatient] = useState<{id: string; name: string; mrn: string} | null>(null);
   const [labTab, setLabTab] = useState<string>('entry');
   
+  // Update selected patient id when the prop changes
+  useEffect(() => {
+    if (patientId) {
+      setSelectedPatientId(patientId);
+    }
+  }, [patientId]);
+
   // Handle new order submission
   const handleOrderSubmit = (newOrders: any[]) => {
     addLabOrders(newOrders);

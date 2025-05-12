@@ -61,7 +61,7 @@ const PatientSelector = ({
   
   // Effect to update selected patient when dropdown changes
   useEffect(() => {
-    if (selectedPatientId) {
+    if (selectedPatientId && selectedPatientId !== selectedPatient?.id) {
       const patient = patients.find(p => p.id === selectedPatientId);
       if (patient) {
         onPatientSelect({
@@ -69,11 +69,9 @@ const PatientSelector = ({
           name: patient.name,
           mrn: patient.mrn
         });
-        // Clear search when selecting from dropdown
-        setPatientSearchQuery('');
       }
     }
-  }, [selectedPatientId, onPatientSelect]);
+  }, [selectedPatientId, onPatientSelect, selectedPatient]);
 
   // Handle patient selection from search
   const handlePatientSelect = (patient: typeof patients[0]) => {
@@ -91,7 +89,14 @@ const PatientSelector = ({
       <div className="flex items-center gap-4 w-full">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-1">My Patients</label>
-          <Select value={selectedPatientId} onValueChange={onPatientIdChange}>
+          <Select 
+            value={selectedPatientId} 
+            onValueChange={(value) => {
+              if (value !== selectedPatientId) {
+                onPatientIdChange(value);
+              }
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select patient" />
             </SelectTrigger>
