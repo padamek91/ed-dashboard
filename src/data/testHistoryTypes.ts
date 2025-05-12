@@ -35,10 +35,10 @@ export const findPreviousResult = (mrn: string, testHistory: Record<string, Test
 
 // Function to check if a test has been ordered within a specific time window
 export const hasRecentOrder = (mrn: string, testHistory: Record<string, TestHistory[]>, testName: string, hoursWindow: number = 24): boolean => {
-  // Normalize MRN
-  const normalizedMrn = mrn.replace(/^MRN/i, '');
+  // Normalize MRN - remove any MRN prefix
+  const normalizedMrn = mrn.replace(/^MRN/i, '').trim();
   
-  console.log(`hasRecentOrder - Normalized MRN: ${normalizedMrn}, Test: ${testName}`);
+  console.log(`hasRecentOrder - Raw MRN: ${mrn}, Normalized MRN: ${normalizedMrn}, Test: ${testName}, Hours: ${hoursWindow}`);
   const patientHistory = testHistory[normalizedMrn];
   
   if (!patientHistory) {
@@ -56,7 +56,7 @@ export const hasRecentOrder = (mrn: string, testHistory: Record<string, TestHist
     if (test.testName === testName) {
       const testDate = new Date(test.timestamp);
       const isRecent = testDate >= timeThreshold;
-      console.log(`Test: ${test.testName}, Date: ${test.timestamp}, Is Recent: ${isRecent}`);
+      console.log(`Test: ${test.testName}, Date: ${test.timestamp}, Is Recent: ${isRecent}, Threshold: ${timeThreshold.toISOString()}`);
       return isRecent;
     }
     return false;

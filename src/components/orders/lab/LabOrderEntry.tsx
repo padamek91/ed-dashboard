@@ -46,7 +46,7 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
       return;
     }
 
-    console.log("Selected patient MRN:", selectedPatient.mrn);
+    console.log("Selected patient MRN:", selectedPatient.mrn, "Normalized:", normalizeMrn(selectedPatient.mrn));
     console.log("Selected tests:", selectedTests);
     
     // Check for duplicate tests before submitting

@@ -50,9 +50,16 @@ export const formatDateTime = (dateString: string) => {
   }
 };
 
-// Normalize MRN by removing prefix if present
+// Normalize MRN by removing prefix if present and ensure consistent format
 export const normalizeMrn = (mrn: string): string => {
-  return mrn.replace(/^MRN/i, '');
+  // Handle null/undefined case
+  if (!mrn) return '';
+  
+  // Remove any 'MRN' prefix (case insensitive) and trim any whitespace
+  const normalizedMrn = mrn.replace(/^MRN/i, '').trim();
+  
+  console.log(`Normalized MRN: original=${mrn}, normalized=${normalizedMrn}`);
+  return normalizedMrn;
 };
 
 // Filter orders based on selected patient

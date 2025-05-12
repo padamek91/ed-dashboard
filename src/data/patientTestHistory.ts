@@ -1,3 +1,4 @@
+
 import { TestHistory } from './testHistoryTypes';
 import { availableLabTests } from './testHistoryTypes';
 
@@ -790,4 +791,205 @@ export const patientTestHistory: Record<string, TestHistory[]> = {
       result: 'Multiple values',
       units: 'Various',
       referenceRange: 'Various',
-      timestamp
+      timestamp: '2025-05-11 21:15', // Yesterday
+      patientId: '10006',
+      abnormal: false
+    }
+  ],
+  
+  // Robert Garcia's test history - adding new patient test history
+  '10007': [
+    {
+      testName: "Complete Blood Count (CBC) with Differential",
+      result: '8.7',
+      units: 'x10^3/μL',
+      referenceRange: '4.5-11.0 x10^3/μL',
+      timestamp: '2025-05-12 01:15', // Today - recent
+      patientId: '10007',
+      abnormal: false
+    },
+    {
+      testName: "Hemoglobin",
+      result: '13.8',
+      units: 'g/dL',
+      referenceRange: '13.0-17.0 g/dL',
+      timestamp: '2025-05-12 01:15',
+      patientId: '10007',
+      abnormal: false
+    },
+    {
+      testName: "Comprehensive Metabolic Panel (CMP)",
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-12 01:30',
+      patientId: '10007',
+      abnormal: false
+    },
+    {
+      testName: "Lipid Panel",
+      result: '225',
+      units: 'mg/dL',
+      referenceRange: '<200 mg/dL',
+      timestamp: '2025-05-11 15:30', // Yesterday
+      patientId: '10007',
+      abnormal: true
+    },
+    {
+      testName: "Troponin T",
+      result: '0.01',
+      units: 'ng/mL',
+      referenceRange: '<0.04 ng/mL',
+      timestamp: '2025-05-11 16:45',
+      patientId: '10007',
+      abnormal: false
+    },
+    {
+      testName: "TSH",
+      result: '2.3',
+      units: 'mIU/L',
+      referenceRange: '0.4-4.0 mIU/L',
+      timestamp: '2025-05-11 14:20',
+      patientId: '10007',
+      abnormal: false
+    }
+  ],
+  
+  // Jennifer Lee's test history - adding new patient test history
+  '10008': [
+    {
+      testName: "Glucose (Serum)",
+      result: '145',
+      units: 'mg/dL',
+      referenceRange: '70-100 mg/dL',
+      timestamp: '2025-05-12 02:10', // Today - recent
+      patientId: '10008',
+      abnormal: true
+    },
+    {
+      testName: "Hemoglobin A1c",
+      result: '7.1',
+      units: '%',
+      referenceRange: '4.0-5.6 %',
+      timestamp: '2025-05-12 02:15',
+      patientId: '10008',
+      abnormal: true
+    },
+    {
+      testName: "Basic Metabolic Panel (BMP)",
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-12 02:30',
+      patientId: '10008',
+      abnormal: false
+    },
+    {
+      testName: "Lipid Panel",
+      result: '185',
+      units: 'mg/dL',
+      referenceRange: '<200 mg/dL',
+      timestamp: '2025-05-11 14:45', // Yesterday
+      patientId: '10008',
+      abnormal: false
+    },
+    {
+      testName: "Urinalysis (UA), Automated",
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-11 15:30',
+      patientId: '10008',
+      abnormal: false
+    }
+  ],
+  
+  // Thomas Wilson's test history - adding new patient test history
+  '10009': [
+    {
+      testName: "Liver Function Tests (LFTs)",
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-12 03:15', // Today - recent
+      patientId: '10009',
+      abnormal: false
+    },
+    {
+      testName: "Hepatitis Panel (A, B, C Antibodies and Antigens)",
+      result: 'Negative',
+      units: '',
+      referenceRange: 'Negative',
+      timestamp: '2025-05-12 03:30',
+      patientId: '10009',
+      abnormal: false
+    },
+    {
+      testName: "Complete Blood Count (CBC) with Differential",
+      result: '4.8',
+      units: 'x10^3/μL',
+      referenceRange: '4.5-11.0 x10^3/μL',
+      timestamp: '2025-05-11 22:15', // Yesterday
+      patientId: '10009',
+      abnormal: false
+    },
+    {
+      testName: "Prothrombin Time (PT) / International Normalized Ratio (INR)",
+      result: 'PT: 14.2s, INR: 1.3',
+      units: 'Various',
+      referenceRange: 'PT: 11.0-13.5s, INR: 0.8-1.2',
+      timestamp: '2025-05-11 22:30',
+      patientId: '10009',
+      abnormal: true
+    }
+  ],
+  
+  // Michelle Clark's test history - adding new patient test history
+  '10010': [
+    {
+      testName: "Coagulation Panel (PT, PTT, INR)",
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-12 01:45', // Today - recent
+      patientId: '10010',
+      abnormal: false
+    },
+    {
+      testName: "D-dimer",
+      result: '0.65',
+      units: 'mg/L FEU',
+      referenceRange: '<0.5 mg/L FEU',
+      timestamp: '2025-05-12 02:00',
+      patientId: '10010',
+      abnormal: true
+    },
+    {
+      testName: "Complete Blood Count (CBC) with Differential",
+      result: '12.5',
+      units: 'x10^3/μL',
+      referenceRange: '4.5-11.0 x10^3/μL',
+      timestamp: '2025-05-12 02:15',
+      patientId: '10010',
+      abnormal: true
+    },
+    {
+      testName: "Troponin I",
+      result: '0.02',
+      units: 'ng/mL',
+      referenceRange: '<0.04 ng/mL',
+      timestamp: '2025-05-11 19:30', // Yesterday
+      patientId: '10010',
+      abnormal: false
+    },
+    {
+      testName: "Electrolyte Panel",
+      result: 'Multiple values',
+      units: 'Various',
+      referenceRange: 'Various',
+      timestamp: '2025-05-11 19:45',
+      patientId: '10010',
+      abnormal: false
+    }
+  ]
+};

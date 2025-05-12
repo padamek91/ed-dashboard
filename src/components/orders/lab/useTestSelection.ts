@@ -47,7 +47,10 @@ export const useTestSelection = (selectedPatient: SelectedPatient | null) => {
 
   // Check for duplicate tests ordered within the last 24 hours
   const checkForDuplicates = () => {
-    if (!selectedPatient) return [];
+    if (!selectedPatient) {
+      console.log("No patient selected, skipping duplicate check");
+      return [];
+    }
     
     const patientMrn = normalizeMrn(selectedPatient.mrn);
     console.log("Checking for duplicates with MRN:", patientMrn, "Original MRN:", selectedPatient.mrn);
@@ -61,7 +64,7 @@ export const useTestSelection = (selectedPatient: SelectedPatient | null) => {
     
     selectedTests.forEach(test => {
       const isSpecialTest = specialTests.some(specialTest => 
-        test.includes(specialTest)
+        test === specialTest // Use exact matching instead of includes
       );
       const hoursWindow = isSpecialTest ? 72 : 24;
       
