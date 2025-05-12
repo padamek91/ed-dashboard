@@ -2,6 +2,7 @@
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import ResultItem from './ResultItem';
 import { LabOrder } from '@/contexts/OrdersContext';
+import { memo } from 'react';
 
 interface ResultListProps {
   filteredResults: LabOrder[];
@@ -10,7 +11,8 @@ interface ResultListProps {
   onViewDetails: (resultId: string) => void;
 }
 
-const ResultList = ({
+// Use memo to prevent unnecessary re-renders
+const ResultList = memo(({
   filteredResults,
   formatLabResult,
   isValueAbnormal,
@@ -42,6 +44,8 @@ const ResultList = ({
       </CardContent>
     </Card>
   );
-};
+});
+
+ResultList.displayName = "ResultList";
 
 export default ResultList;

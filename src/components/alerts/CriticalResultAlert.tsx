@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+
+import { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOrders } from '@/contexts/OrdersContext';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const CriticalResultAlert = () => {
+// Using memo to prevent unnecessary re-renders
+export const CriticalResultAlert = memo(() => {
   const { criticalResults, clearCriticalNotification } = useOrders();
   const [isVisible, setIsVisible] = useState(false);
   const [currentResultIndex, setCurrentResultIndex] = useState(0);
@@ -77,4 +79,6 @@ export const CriticalResultAlert = () => {
       </Alert>
     </div>
   );
-};
+});
+
+CriticalResultAlert.displayName = "CriticalResultAlert";
