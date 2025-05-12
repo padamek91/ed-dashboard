@@ -6,7 +6,7 @@ import SelectedTestsList from './SelectedTestsList';
 import DuplicateTestAlert from './DuplicateTestAlert';
 import { useTestSelection } from './useTestSelection';
 import { useToast } from '@/hooks/use-toast';
-import { generateOrderId, getCurrentTimestamp } from '@/utils/orderUtils';
+import { generateOrderId, getCurrentTimestamp, normalizeMrn } from '@/utils/orderUtils';
 
 interface LabOrderEntryProps {
   selectedPatient: { id: string; name: string; mrn: string } | null;
@@ -46,6 +46,9 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
       return;
     }
 
+    console.log("Selected patient MRN:", selectedPatient.mrn);
+    console.log("Selected tests:", selectedTests);
+    
     // Check for duplicate tests before submitting
     const duplicates = checkForDuplicates();
     if (duplicates.length > 0) {
@@ -62,7 +65,7 @@ const LabOrderEntry = ({ selectedPatient, onOrderSubmit, setActiveLabTab }: LabO
     const newOrders = selectedTests.map(test => ({
       id: generateOrderId(),
       patient: selectedPatient!.name,
-      mrn: selectedPatient!.mrn,
+      mrn: normalizeMrn(selectedPatient!.mrn),
       type: test,
       status: 'order placed',
       timestamp: getCurrentTimestamp(),

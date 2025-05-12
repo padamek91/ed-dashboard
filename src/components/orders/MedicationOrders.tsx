@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { medicationOrders, commonOrders } from '@/data/ordersMockData';
+import { medicationOrders } from '@/data/ordersMockData';
 import PatientSelector from './PatientSelector';
 import OrdersTable from './OrdersTable';
 import { filterOrdersByPatient } from '@/utils/orderUtils';

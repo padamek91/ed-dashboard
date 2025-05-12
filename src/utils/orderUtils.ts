@@ -50,13 +50,20 @@ export const formatDateTime = (dateString: string) => {
   }
 };
 
+// Normalize MRN by removing prefix if present
+export const normalizeMrn = (mrn: string): string => {
+  return mrn.replace(/^MRN/i, '');
+};
+
 // Filter orders based on selected patient
 export const filterOrdersByPatient = (orders: any[], patientInfo: {name: string, mrn: string} | null) => {
   if (!patientInfo) return orders;
   
+  const normalizedMrn = normalizeMrn(patientInfo.mrn);
+  
   return orders.filter(order => 
     order.patient === patientInfo.name || 
-    order.mrn === patientInfo.mrn
+    normalizeMrn(order.mrn) === normalizedMrn
   );
 };
 

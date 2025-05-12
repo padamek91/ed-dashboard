@@ -12,7 +12,10 @@ export type TestHistory = {
 
 // Function to find previous test results for a patient
 export const findPreviousResult = (mrn: string, testHistory: Record<string, TestHistory[]>, testName: string): TestHistory | null => {
-  const patientHistory = testHistory[mrn];
+  // Normalize MRN
+  const normalizedMrn = mrn.replace(/^MRN/i, '');
+  
+  const patientHistory = testHistory[normalizedMrn];
   if (!patientHistory) return null;
   
   // Get all tests with matching name
@@ -32,20 +35,35 @@ export const findPreviousResult = (mrn: string, testHistory: Record<string, Test
 
 // Function to check if a test has been ordered within a specific time window
 export const hasRecentOrder = (mrn: string, testHistory: Record<string, TestHistory[]>, testName: string, hoursWindow: number = 24): boolean => {
-  const patientHistory = testHistory[mrn];
-  if (!patientHistory) return false;
+  // Normalize MRN
+  const normalizedMrn = mrn.replace(/^MRN/i, '');
+  
+  console.log(`hasRecentOrder - Normalized MRN: ${normalizedMrn}, Test: ${testName}`);
+  const patientHistory = testHistory[normalizedMrn];
+  
+  if (!patientHistory) {
+    console.log(`No history found for patient MRN: ${normalizedMrn}`);
+    return false;
+  }
+  
+  console.log(`Found ${patientHistory.length} test records for patient ${normalizedMrn}`);
   
   const now = new Date();
   const timeThreshold = new Date(now.getTime() - hoursWindow * 60 * 60 * 1000);
   
   // Find if the test has been performed within the time window
-  return patientHistory.some(test => {
+  const hasRecent = patientHistory.some(test => {
     if (test.testName === testName) {
       const testDate = new Date(test.timestamp);
-      return testDate >= timeThreshold;
+      const isRecent = testDate >= timeThreshold;
+      console.log(`Test: ${test.testName}, Date: ${test.timestamp}, Is Recent: ${isRecent}`);
+      return isRecent;
     }
     return false;
   });
+  
+  console.log(`Has recent order for "${testName}": ${hasRecent}`);
+  return hasRecent;
 };
 
 // List of all available lab tests that can be ordered
