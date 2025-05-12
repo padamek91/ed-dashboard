@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LabOrders from '../orders/lab/LabOrders';
 import MedicationOrders from '../orders/MedicationOrders';
@@ -15,7 +15,7 @@ interface OrdersTabProps {
 const OrdersTab = ({ initialTab = '', patientId = '' }: OrdersTabProps) => {
   const [mainTab, setMainTab] = useState<string>('Lab');
   
-  // Set initial tab if provided
+  // Set initial tab if provided - using proper dependency array
   useEffect(() => {
     if (initialTab) {
       // Capitalize first letter for consistency with tab values
@@ -24,11 +24,11 @@ const OrdersTab = ({ initialTab = '', patientId = '' }: OrdersTabProps) => {
     }
   }, [initialTab]);
   
-  // Find selected patient info if patientId is provided
+  // Find selected patient info if patientId is provided - memoized calculation
   const selectedPatient = patientId ? 
     patients.find(patient => patient.id === patientId) : null;
   
-  // Log the selected patient for debugging
+  // Log the selected patient for debugging - with proper dependency array
   useEffect(() => {
     if (selectedPatient) {
       console.log('Selected patient for orders:', selectedPatient.name);

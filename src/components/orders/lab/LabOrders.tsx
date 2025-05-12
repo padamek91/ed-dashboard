@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PatientSelector from '../PatientSelector';
@@ -18,17 +18,17 @@ const LabOrders = ({ patientId }: LabOrdersProps) => {
   const [selectedPatient, setSelectedPatient] = useState<{id: string; name: string; mrn: string} | null>(null);
   const [labTab, setLabTab] = useState<string>('entry');
   
-  // Update selected patient id when the prop changes
+  // Update selected patient id when the prop changes - with proper dependency check
   useEffect(() => {
     if (patientId) {
       setSelectedPatientId(patientId);
     }
   }, [patientId]);
 
-  // Handle new order submission
-  const handleOrderSubmit = (newOrders: any[]) => {
+  // Handle new order submission - wrapped in useCallback to prevent recreation on each render
+  const handleOrderSubmit = useCallback((newOrders: any[]) => {
     addLabOrders(newOrders);
-  };
+  }, [addLabOrders]);
 
   return (
     <Card>
