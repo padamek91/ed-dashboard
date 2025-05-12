@@ -57,22 +57,22 @@ const OrdersTab = ({ initialTab = '', patientId = '' }: OrdersTabProps) => {
 
         {/* Lab Tab Content */}
         <TabsContent value="Lab" className="mt-4">
-          <LabOrders patientId={patientId || ''} />
+          <LabOrders patientId={patientId} />
         </TabsContent>
 
         {/* Medication Tab Content */}
         <TabsContent value="Medication" className="mt-4">
-          <MedicationOrders patientId={patientId || ''} />
+          <MedicationOrders patientId={patientId} />
         </TabsContent>
 
         {/* Imaging Tab Content */}
         <TabsContent value="Imaging" className="mt-4">
-          <ImagingOrders patientId={patientId || ''} />
+          <ImagingOrders patientId={patientId} />
         </TabsContent>
 
         {/* Consult Tab Content */}
         <TabsContent value="Consult" className="mt-4">
-          <ConsultOrders patientId={patientId || ''} />
+          <ConsultOrders patientId={patientId} />
         </TabsContent>
       </Tabs>
     </div>
